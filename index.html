@@ -1,302 +1,476 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>0xnothings — 234 zero-dependency Node.js tools</title>
-<meta name="description" content="234 CLI tools across security, devops, web and data. Node standard library only — no npm install, no build step, no native modules.">
-<meta property="og:title" content="0xnothings — 234 zero-dependency Node.js tools">
-<meta property="og:description" content="Recon, devops gates, web scraping and hand-written binary parsers. Node 18+ standard library only.">
-<meta property="og:type" content="website">
+<title>0xnothings — tools</title>
+<meta name="description" content="234 zero-dependency Node.js CLI tools. Recon, devops, web, data. Node standard library only.">
+<meta name="color-scheme" content="dark light">
 <style>
-  :root {
-    --bg: #0b0d10;
-    --panel: #12161b;
-    --panel-2: #171c22;
-    --line: #232a33;
-    --fg: #e6edf3;
-    --dim: #8b98a5;
-    --accent: #4ade80;
-    --accent-2: #60a5fa;
-    --warn: #fbbf24;
-    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--accent-2); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+/* ------------------------------------------------------------------
+   Palette: amber/copper void. Deliberately not GitHub's blue-on-graphite.
+   Dark is the default; light is opt-in and persisted in localStorage.
+   ------------------------------------------------------------------ */
+:root[data-theme="dark"] {
+  --void:        #0a0806;
+  --void-2:      #100d0a;
+  --surface:     #17130f;
+  --surface-2:   #1e1913;
+  --surface-3:   #261f18;
+  --hairline:    #332a21;
+  --hairline-2:  #453829;
+  --ink:         #f2ede6;
+  --ink-2:       #c4b8a8;
+  --ink-3:       #8a7d6d;
+  --ember:       #e8763a;
+  --ember-2:     #ff9153;
+  --gold:        #e8b04a;
+  --gold-2:      #f7cd7a;
+  --mint:        #5eead4;
+  --rose:        #f0788c;
+  --glow:        rgba(232,118,58,.22);
+  --glow-2:      rgba(232,176,74,.14);
+}
+:root[data-theme="light"] {
+  --void:        #faf7f2;
+  --void-2:      #f3ede4;
+  --surface:     #ffffff;
+  --surface-2:   #faf6f0;
+  --surface-3:   #f2ebe1;
+  --hairline:    #e2d8c9;
+  --hairline-2:  #cdbfaa;
+  --ink:         #241d15;
+  --ink-2:       #574a3a;
+  --ink-3:       #87765f;
+  --ember:       #c2551f;
+  --ember-2:     #a8451a;
+  --gold:        #9a7215;
+  --gold-2:      #7d5c10;
+  --mint:        #0f766e;
+  --rose:        #b0324a;
+  --glow:        rgba(194,85,31,.10);
+  --glow-2:      rgba(154,114,21,.08);
+}
 
-  header { border-bottom: 1px solid var(--line); padding: 64px 0 48px; }
-  h1 { font-size: 40px; line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
-  h1 .num { color: var(--accent); }
-  .lede { font-size: 19px; color: var(--dim); max-width: 62ch; margin: 0 0 32px; }
-  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 11px 20px; border-radius: 8px;
-    border: 1px solid var(--line); background: var(--panel); color: var(--fg);
-    font-weight: 500; font-size: 15px;
-  }
-  .btn:hover { border-color: #38424f; text-decoration: none; }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #06210f; font-weight: 600; }
-  .btn.primary:hover { background: #3fcf72; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--ink);
+  font: 16px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* grain + ember bloom, no image files */
+  background-image:
+    radial-gradient(900px 420px at 12% -8%, var(--glow), transparent 68%),
+    radial-gradient(700px 360px at 92% 4%, var(--glow-2), transparent 70%);
+  background-attachment: fixed;
+}
+a { color: var(--gold-2); text-decoration: none; }
+a:hover { color: var(--ember-2); }
+.mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
 
-  section { padding: 56px 0; border-bottom: 1px solid var(--line); }
-  h2 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.01em; }
-  .sub { color: var(--dim); margin: 0 0 28px; }
+/* ── header ─────────────────────────────────────────────── */
+.hdr { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--void) 86%, transparent);
+  border-bottom: 1px solid var(--hairline); }
+.hdr-in { display: flex; align-items: center; gap: 14px; padding: 13px 0; }
+.brand { display: flex; align-items: baseline; gap: 9px; font-weight: 650; letter-spacing: -.01em; }
+.brand .mark { color: var(--ember); font-size: 19px; }
+.brand .dim { color: var(--ink-3); font-weight: 400; font-size: 14px; }
+.spacer { flex: 1; }
+.icon-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--surface-2); border: 1px solid var(--hairline);
+  color: var(--ink-2); border-radius: 9px; padding: 7px 12px;
+  font-size: 13.5px; cursor: pointer; font-family: inherit;
+}
+.icon-btn:hover { border-color: var(--hairline-2); color: var(--ink); }
+.icon-btn:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
 
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-  .stat { background: var(--panel); padding: 20px 18px; }
-  .stat b { display: block; font: 600 28px/1.2 var(--mono); color: var(--accent); }
-  .stat span { color: var(--dim); font-size: 13px; }
+/* ── hero / profile ─────────────────────────────────────── */
+.hero { padding: 46px 0 34px; }
+.hero-grid { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+.avatar {
+  width: 88px; height: 88px; border-radius: 20px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, var(--ember), var(--gold));
+  color: #1a0f06; font: 800 34px/1 ui-monospace, monospace; letter-spacing: -.04em;
+  box-shadow: 0 10px 34px -14px var(--ember);
+}
+.hero-body { flex: 1 1 320px; min-width: 0; }
+h1 { margin: 0 0 6px; font-size: 30px; line-height: 1.15; letter-spacing: -.025em; }
+h1 .accent { color: var(--ember); }
+.bio { margin: 0 0 14px; color: var(--ink-2); max-width: 68ch; font-size: 15.5px; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip {
+  font: 12.5px var(--mono); color: var(--ink-3);
+  border: 1px solid var(--hairline); border-radius: 999px; padding: 3px 11px;
+  background: var(--surface);
+}
+.chip b { color: var(--ink); font-weight: 600; }
+.chip.on { border-color: var(--ember); color: var(--ember-2); }
 
-  .repos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-  .repo { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; }
-  .repo h3 { margin: 0 0 6px; font-size: 17px; font-family: var(--mono); }
-  .repo h3 a { color: var(--fg); }
-  .repo p { margin: 0 0 14px; color: var(--dim); font-size: 14px; flex: 1; }
-  .repo .meta { font: 12px/1.5 var(--mono); color: var(--dim); margin-bottom: 14px; }
-  .repo .meta em { color: var(--accent); font-style: normal; }
-  .tag { display: inline-block; font: 11px var(--mono); color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; margin: 0 4px 4px 0; }
+/* ── stat strip ─────────────────────────────────────────── */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px; background: var(--hairline); border: 1px solid var(--hairline);
+  border-radius: 14px; overflow: hidden; margin: 30px 0 0; }
+.stat { background: var(--surface); padding: 15px 16px; }
+.stat b { display: block; font: 650 23px/1.2 var(--mono); color: var(--gold); }
+.stat span { font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
 
-  pre { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px; overflow-x: auto; margin: 0 0 16px; }
-  code { font-family: var(--mono); font-size: 13.5px; }
-  p code, li code { background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-size: 13px; }
-  .cmd { color: var(--accent); }
-  .cap { color: var(--dim); font-size: 13px; margin: -8px 0 20px; }
+/* ── controls ───────────────────────────────────────────── */
+.controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 30px 0 18px; }
+.search {
+  flex: 1 1 260px; min-width: 0; position: relative;
+}
+.search input {
+  width: 100%; padding: 11px 14px 11px 38px;
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 10px; color: var(--ink); font: 14.5px inherit; font-family: inherit;
+}
+.search input::placeholder { color: var(--ink-3); }
+.search input:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px var(--glow); }
+.search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-3); }
+select.sortsel {
+  padding: 11px 13px; background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 10px; color: var(--ink-2); font: 14px inherit; font-family: inherit; cursor: pointer;
+}
+select.sortsel:focus { outline: none; border-color: var(--ember); }
 
-  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { color: var(--dim); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
-  td code { font-size: 13px; }
+/* ── repo grid ──────────────────────────────────────────── */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+.card {
+  background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px;
+  padding: 17px; display: flex; flex-direction: column; gap: 9px;
+  transition: border-color .16s, transform .16s, box-shadow .16s;
+}
+.card:hover { border-color: var(--hairline-2); transform: translateY(-2px);
+  box-shadow: 0 14px 34px -20px rgba(0,0,0,.7); }
+.card-top { display: flex; align-items: baseline; gap: 8px; }
+.card h3 { margin: 0; font-size: 15.5px; font-family: var(--mono); letter-spacing: -.01em; }
+.card h3 a { color: var(--ink); }
+.card h3 a:hover { color: var(--ember-2); }
+.stars { margin-left: auto; font: 12.5px var(--mono); color: var(--gold); white-space: nowrap; }
+.card p { margin: 0; font-size: 14px; color: var(--ink-2); flex: 1; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag { font: 11px var(--mono); color: var(--ink-3); border: 1px solid var(--hairline);
+  border-radius: 6px; padding: 1.5px 7px; background: var(--surface-2); }
+.card-foot { display: flex; gap: 14px; font: 12px var(--mono); color: var(--ink-3);
+  border-top: 1px solid var(--hairline); padding-top: 9px; margin-top: 2px; }
+.card-foot .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px;
+  background: var(--mint); }
+.card-foot .dot.warn { background: var(--gold); }
 
-  .why { display: grid; gap: 20px; }
-  .why div { border-left: 2px solid var(--accent); padding-left: 16px; }
-  .why h4 { margin: 0 0 4px; font-size: 15px; }
-  .why p { margin: 0; color: var(--dim); font-size: 14.5px; }
+/* ── states ─────────────────────────────────────────────── */
+.empty { text-align: center; padding: 56px 20px; color: var(--ink-3); }
+.empty code { color: var(--gold); font-family: var(--mono); }
+.skel { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px;
+  padding: 17px; height: 150px; position: relative; overflow: hidden; }
+.skel::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, var(--surface-3), transparent);
+  animation: sweep 1.5s infinite;
+}
+@keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.notice { border: 1px solid var(--hairline); border-left: 2px solid var(--gold);
+  background: var(--surface); border-radius: 10px; padding: 13px 16px; color: var(--ink-2);
+  font-size: 14px; margin: 0 0 18px; }
+.notice b { color: var(--gold-2); }
 
-  footer { padding: 40px 0 64px; color: var(--dim); font-size: 14px; }
-  footer a { color: var(--dim); }
-  @media (max-width: 640px) { h1 { font-size: 30px; } .lede { font-size: 17px; } }
+/* ── footer ─────────────────────────────────────────────── */
+.foot { border-top: 1px solid var(--hairline); margin-top: 54px; padding: 26px 0 54px;
+  color: var(--ink-3); font-size: 13.5px; }
+.foot-links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 10px; }
+.foot-links a { color: var(--ink-2); }
+
+@media (max-width: 620px) {
+  h1 { font-size: 24px; }
+  .hero { padding: 30px 0 24px; }
+  .avatar { width: 68px; height: 68px; font-size: 26px; border-radius: 16px; }
+  .grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <h1><span class="num">234</span> zero-dependency Node.js tools</h1>
-    <p class="lede">
-      Recon, devops gates, web scraping, and hand-written binary parsers. Every tool runs on the
-      Node standard library alone — no <code>npm install</code>, no build step, no native modules.
-      Clone it and run it.
-    </p>
-    <div class="cta">
-      <a class="btn primary" href="#repos">Browse the repos</a>
-      <a class="btn" href="https://github.com/0xnothings">github.com/0xnothings</a>
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <div class="brand">
+      <span class="mark mono">◆</span>
+      <span>0xnothings</span>
+      <span class="dim mono">/ tools</span>
     </div>
+    <div class="spacer"></div>
+    <button class="icon-btn" id="themeBtn" type="button" aria-live="polite">◐ <span id="themeLabel">dark</span></button>
+    <a class="icon-btn" href="https://github.com/0xnothings" rel="noopener">GitHub</a>
   </div>
 </header>
 
-<section>
-  <div class="wrap">
-    <h2>What's in it</h2>
-    <p class="sub">Four repos, 234 tools, 41,555 lines of shipped code, all of it auditable in an afternoon.</p>
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="avatar" aria-hidden="true">0x</div>
+      <div class="hero-body">
+        <h1>Nothinganywhere <span class="accent mono">· 0xnothings</span></h1>
+        <p class="bio">
+          Zero-dependency Node.js CLI tools. Every one runs on the standard library alone —
+          no <span class="mono">npm install</span>, no build step, no native modules.
+          Recon, devops gates, scraping, and hand-written binary parsers.
+        </p>
+        <div class="meta-row">
+          <span class="chip mono"><b id="repoCount">—</b> repos</span>
+          <span class="chip mono"><b>234</b> tools</span>
+          <span class="chip mono"><b>41.5k</b> LOC</span>
+          <span class="chip mono"><b>0</b> deps</span>
+          <span class="chip on mono">MIT</span>
+        </div>
+      </div>
+    </div>
+
     <div class="stats">
-      <div class="stat"><b>234</b><span>tools</span></div>
-      <div class="stat"><b>41.5k</b><span>lines of code</span></div>
-      <div class="stat"><b>0</b><span>runtime dependencies</span></div>
-      <div class="stat"><b>94</b><span>output assertions</span></div>
-      <div class="stat"><b>234</b><span>smoke checks per push</span></div>
+      <div class="stat"><b id="statStars">—</b><span>stars</span></div>
+      <div class="stat"><b id="statForks">—</b><span>forks</span></div>
+      <div class="stat"><b id="statTools">234</b><span>tools shipped</span></div>
+      <div class="stat"><b id="statDeps">0</b><span>dependencies</span></div>
+      <div class="stat"><b id="statTests">94</b><span>output assertions</span></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="repos">
-  <div class="wrap">
-    <h2>The repos</h2>
-    <p class="sub">Each one is a standalone monorepo: one file per tool, a shared helper, a smoke test, and a CI workflow that runs all three layers.</p>
-    <div class="repos">
+  <section>
+    <div id="notice"></div>
 
-      <div class="repo">
-        <h3><a href="https://github.com/0xnothings/tools-security">tools-security</a></h3>
-        <p>Recon, web-app testing, credential hygiene, CVE intel and static audit. Port scanner, subdomain brute-forcer, CORS matrix, JWT inspector, secret scanner, TLS grader.</p>
-        <div class="meta">65 tools · 10,026 LOC · <em>23 assertions</em></div>
-        <div>
-          <span class="tag">recon</span><span class="tag">appsec</span><span class="tag">secrets</span><span class="tag">cve</span>
-        </div>
-      </div>
-
-      <div class="repo">
-        <h3><a href="https://github.com/0xnothings/tools-devops">tools-devops</a></h3>
-        <p>Deploy gates, config hygiene, host audits and generators. Cron explainer, nginx vhost generator, certificate chain walker, compose/k8s linters, log analyser.</p>
-        <div class="meta">48 tools · 6,669 LOC · <em>19 assertions</em></div>
-        <div>
-          <span class="tag">deploy</span><span class="tag">hardening</span><span class="tag">tls</span><span class="tag">containers</span>
-        </div>
-      </div>
-
-      <div class="repo">
-        <h3><a href="https://github.com/0xnothings/tools-web">tools-web</a></h3>
-        <p>Scraping, feeds, metadata and page analysis with no headless browser. HTML-to-markdown, table-to-grid, OpenAPI contract checker, CORS matrix, robots/hreflang graphs.</p>
-        <div class="meta">61 tools · 11,164 LOC · <em>20 assertions</em></div>
-        <div>
-          <span class="tag">scraping</span><span class="tag">seo</span><span class="tag">feeds</span><span class="tag">http</span>
-        </div>
-      </div>
-
-      <div class="repo">
-        <h3><a href="https://github.com/0xnothings/tools-data">tools-data</a></h3>
-        <p>CSV, JSON, ZIP, XLSX, SQLite and image metadata — parsers written by hand. External merge sort, content-hash dedupe, file carving, entropy scan, EXIF reader.</p>
-        <div class="meta">60 tools · 13,696 LOC · <em>32 assertions</em></div>
-        <div>
-          <span class="tag">csv</span><span class="tag">json</span><span class="tag">binary</span><span class="tag">parsing</span>
-        </div>
-      </div>
-
+    <div class="controls">
+      <label class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <input id="q" type="search" placeholder="Filter by name, description or language…" autocomplete="off" aria-label="Filter repositories">
+      </label>
+      <select class="sortsel" id="sort" aria-label="Sort repositories">
+        <option value="updated">Recently updated</option>
+        <option value="name">Name A–Z</option>
+        <option value="stars">Most stars</option>
+        <option value="size">Largest</option>
+      </select>
     </div>
-  </div>
-</section>
 
-<section>
-  <div class="wrap">
-    <h2>What it looks like</h2>
-    <p class="sub">Real output, copied from a terminal. Not mockups.</p>
-
-<pre><code><span class="cmd">$ node tools/hashid.js --text hello --gen sha256</span>
-algo    digest
-------  ----------------------------------------------------------------
-sha256  2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
-
-length 5 chars</code></pre>
-    <p class="cap">Hash generation with an identification table for 25+ formats.</p>
-
-<pre><code><span class="cmd">$ node tools/cidr.js 10.0.0.0/30</span>
-10.0.0.0/30                       4 addr   10.0.0.0 - 10.0.0.3
-  10.0.0.0
-  10.0.0.1
-  10.0.0.2
-  10.0.0.3
-
-1 range(s), 4 addresses</code></pre>
-    <p class="cap">CIDR math: expand, split, collapse, or test whether an IP falls inside a range.</p>
-
-<pre><code><span class="cmd">$ node tools/tabletext.js pricing.html --max-width 20</span>
-┌────────┬──────────────────────────┐
-│ name   │ description              │
-├────────┼──────────────────────────┤
-│ sha256 │ hex digest of the input  │
-├────────┼──────────────────────────┤
-│ cidr   │ expand or split a        │
-│        │ network                  │
-└────────┴──────────────────────────┘</code></pre>
-    <p class="cap">HTML tables to an aligned monospace grid, with wrapping and colspan handling.</p>
-
-<pre><code><span class="cmd">$ node tools/filetype.js node.exe</span>
-node.exe — DOS/MZ executable
-field                value
--------------------  --------------------------------
-mime                 application/x-dosexec
-suggested extension  .exe
-category             executable
-size                 92825416 bytes
-entropy              7.968 bits/byte
-text-like            no</code></pre>
-    <p class="cap">Magic-byte identification, offset-aware, so a PDF inside a junk prefix still resolves.</p>
-
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>Conventions</h2>
-    <p class="sub">Learn the contract once, use it everywhere.</p>
-    <table>
-      <thead><tr><th>Rule</th><th>Why</th></tr></thead>
-      <tbody>
-        <tr><td><code>node tools/&lt;name&gt;.js --help</code></td><td>Every tool prints its own usage and exits 0. Nothing to memorise.</td></tr>
-        <tr><td><code>--json</code> on every tool</td><td>Pipe into <code>jq</code>, a script, or another tool. No scraping your own output.</td></tr>
-        <tr><td>Exit codes: <code>0</code> clean, <code>1</code> findings, <code>2</code> gate</td><td>Drop any tool straight into CI. Findings fail the build, clean passes.</td></tr>
-        <tr><td>Zero runtime dependencies</td><td>No lockfile churn, no supply-chain surface, no <code>npm audit</code> noise.</td></tr>
-        <tr><td>Read-only by default</td><td>Tools that write take an explicit <code>--out</code>. Nothing mutates in place.</td></tr>
-        <tr><td>Conservative defaults</td><td>Rate limits and concurrency start low. Raise them yourself when you own the target.</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <h2>Why zero dependencies</h2>
-    <p class="sub">The most consequential design decision in the project.</p>
-    <div class="why">
-      <div>
-        <h4>The whole thing is auditable</h4>
-        <p>41,555 lines with no transitive tree behind it. You can read what runs, and so can anyone reviewing it.</p>
-      </div>
-      <div>
-        <h4>It still works in five years</h4>
-        <p>No lockfile to rot, no major version to chase. Node 18+ builtins change far more slowly than the ecosystem around them.</p>
-      </div>
-      <div>
-        <h4>Nothing to trust</h4>
-        <p>A 200-line tool that pulls 40 packages is not a tool, it is a liability. The parsers here — ZIP, XLSX, SQLite, EXIF, TAR — are written by hand because the format is the interesting part.</p>
-      </div>
-      <div>
-        <h4>It runs anywhere Node runs</h4>
-        <p>A locked-down CI runner, a fresh container, an air-gapped box. Clone and go, no install step to fail.</p>
-      </div>
+    <div class="grid" id="grid">
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
     </div>
-  </div>
-</section>
+    <div id="emptyState"></div>
+  </section>
 
-<section>
-  <div class="wrap">
-    <h2>How it's tested</h2>
-    <p class="sub">Three layers, because each one misses what the previous catches.</p>
-    <table>
-      <thead><tr><th>Layer</th><th>Catches</th><th>How</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><code>smoke.js --deep</code></td>
-          <td>A tool that will not load, or references a helper it never imported</td>
-          <td>Runs every tool with <code>--help</code> and with no arguments, then lints syntax and import reachability across all 234 files</td>
-        </tr>
-        <tr>
-          <td><code>podcheck.js</code></td>
-          <td>A tool that crashes at the end of its real code path</td>
-          <td>112 real invocations with generated fixtures, failing on any stack trace</td>
-        </tr>
-        <tr>
-          <td><code>assertcheck.js</code></td>
-          <td>A tool that runs cleanly and returns the <em>wrong answer</em></td>
-          <td>94 cases asserting exit codes, exact output fragments, regexes and line counts</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="cap">
-      That third layer exists because the first two missed real bugs: a file-type detector that called every
-      short text file binary, and a JSON linter that flagged every URL as a comment.
-    </p>
-  </div>
-</section>
+</main>
 
-<footer>
+<footer class="foot">
   <div class="wrap">
-    <p>
-      MIT licensed. Built by <a href="https://github.com/0xnothings">0xnothings</a> ·
-      <a href="https://github.com/0xnothings/tools-security">security</a> ·
-      <a href="https://github.com/0xnothings/tools-devops">devops</a> ·
-      <a href="https://github.com/0xnothings/tools-web">web</a> ·
-      <a href="https://github.com/0xnothings/tools-data">data</a>
-    </p>
-    <p style="color:#5b6672">No analytics, no trackers, no fonts loaded from a CDN. This page is a single file.</p>
+    <div class="foot-links">
+      <a href="https://github.com/0xnothings/tools-security">tools-security</a>
+      <a href="https://github.com/0xnothings/tools-devops">tools-devops</a>
+      <a href="https://github.com/0xnothings/tools-web">tools-web</a>
+      <a href="https://github.com/0xnothings/tools-data">tools-data</a>
+      <a href="https://github.com/0xnothings">all repos</a>
+    </div>
+    <div>
+      Repo data from the GitHub API, cached for 10 minutes in this browser.
+      This page is a single file with no external requests — no fonts, no analytics, no trackers.
+      <span id="cachedAt"></span>
+    </div>
   </div>
 </footer>
 
+<script type="module">
+// ---------------------------------------------------------------------------
+// The page is static; repo cards come from the public GitHub API at runtime.
+// Everything degrades: no JS or a rate-limited API still leaves a readable page
+// with the four canonical repos listed in the footer.
+// ---------------------------------------------------------------------------
+const USER = '0xnothings';
+const CACHE_KEY = 'oxn-repos-v1';
+const CACHE_MS = 10 * 60 * 1000;
+
+// Shown when the API is unavailable, so the page is never empty.
+const FALLBACK = [
+  { name: 'tools-security', html_url: `https://github.com/${USER}/tools-security`, description: 'Recon, web-app testing, credential hygiene, CVE intel and static audit.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['security', 'recon', 'appsec'], size: null, pushed_at: null },
+  { name: 'tools-devops', html_url: `https://github.com/${USER}/tools-devops`, description: 'Deploy gates, config hygiene, host audits and generators.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['devops', 'automation'], size: null, pushed_at: null },
+  { name: 'tools-web', html_url: `https://github.com/${USER}/tools-web`, description: 'Scraping, feeds, metadata and page analysis with no headless browser.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['web', 'scraping'], size: null, pushed_at: null },
+  { name: 'tools-data', html_url: `https://github.com/${USER}/tools-data`, description: 'CSV, JSON, ZIP, XLSX, SQLite and image metadata — parsers written by hand.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['data', 'parsing'], size: null, pushed_at: null },
+];
+
+const el = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// ── theme ──────────────────────────────────────────────────────────────────
+const THEME_KEY = 'oxn-theme';
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  el('themeLabel').textContent = t;
+  try { localStorage.setItem(THEME_KEY, t); } catch {}
+}
+(function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch {}
+  const prefersLight = matchMedia('(prefers-color-scheme: light)').matches;
+  applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+})();
+el('themeBtn').addEventListener('click', () => {
+  const now = document.documentElement.getAttribute('data-theme');
+  applyTheme(now === 'dark' ? 'light' : 'dark');
+});
+
+// ── data ───────────────────────────────────────────────────────────────────
+let repos = [];
+let usedCache = false;
+
+function readCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { at, data } = JSON.parse(raw);
+    if (!Array.isArray(data) || !data.length) return null;
+    if (Date.now() - at > CACHE_MS) return null;
+    usedCache = true;
+    return { at, data };
+  } catch { return null; }
+}
+function writeCache(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data })); } catch {}
+}
+
+// The list endpoint does NOT include topics — that needs one request per repo,
+// against an unauthenticated limit of 60/hour. So topics are fetched only for
+// the four tool repos, three at a time, and any failure just leaves the tag row
+// empty. Card content never depends on them.
+async function fetchTopics(names) {
+  const out = {};
+  const queue = [...names];
+  const worker = async () => {
+    while (queue.length) {
+      const name = queue.shift();
+      try {
+        const res = await fetch(`https://api.github.com/repos/${USER}/${name}/topics`, {
+          headers: { accept: 'application/vnd.github+json' },
+        });
+        if (!res.ok) continue;
+        const j = await res.json();
+        if (Array.isArray(j.names)) out[name] = j.names;
+      } catch { /* topics are decorative; never fail the page for them */ }
+    }
+  };
+  await Promise.all([worker(), worker(), worker()]);
+  return out;
+}
+
+async function fetchRepos() {
+  const cached = readCache();
+  if (cached) { el('cachedAt').textContent = ` Cache written ${new Date(cached.at).toLocaleTimeString()}.`; return cached.data; }
+
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), 12000);
+  try {
+    const res = await fetch(`https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`, {
+      signal: ctl.signal,
+      headers: { accept: 'application/vnd.github+json' },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('unexpected payload');
+
+    const tools = data.filter((r) => /^tools-/.test(r.name)).map((r) => r.name);
+    const topics = await fetchTopics(tools);
+    for (const r of data) if (topics[r.name]) r.topics = topics[r.name];
+
+    writeCache(data);
+    return data;
+  } catch (e) {
+    el('notice').innerHTML =
+      `<div class="notice"><b>GitHub API unavailable</b> (${esc(e.name === 'AbortError' ? 'timeout' : e.message)}).
+       Showing the four main repos from memory. Live stars and timestamps will appear on a later load.</div>`;
+    return FALLBACK;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+// ── render ─────────────────────────────────────────────────────────────────
+const fmtSize = (kb) => (kb == null ? '—' : kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`);
+const fmtAgo = (iso) => {
+  if (!iso) return '—';
+  const d = Math.floor((Date.now() - new Date(iso)) / 86400000);
+  if (d < 1) return 'today';
+  if (d === 1) return 'yesterday';
+  if (d < 30) return `${d}d ago`;
+  if (d < 365) return `${Math.round(d / 30)}mo ago`;
+  return `${(d / 365).toFixed(1)}y ago`;
+};
+
+function cardHTML(r) {
+  const stars = r.stargazers_count == null ? '<span class="stars">—</span>'
+    : `<span class="stars">★ ${r.stargazers_count}</span>`;
+  const topics = (r.topics || []).slice(0, 6).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+  const archived = r.archived ? '<span class="dot warn"></span>archived' : '<span class="dot"></span>active';
+  return `<article class="card">
+    <div class="card-top">
+      <h3><a href="${esc(r.html_url)}" rel="noopener">${esc(r.name)}</a></h3>
+      ${stars}
+    </div>
+    <p>${esc(r.description || 'No description.')}</p>
+    <div class="tags">${topics}</div>
+    <div class="card-foot">
+      <span>${archived}</span>
+      <span>${esc(r.language || '—')}</span>
+      <span>${fmtSize(r.size)}</span>
+      <span>updated ${fmtAgo(r.pushed_at)}</span>
+    </div>
+  </article>`;
+}
+
+function render() {
+  const q = el('q').value.trim().toLowerCase();
+  const sort = el('sort').value;
+
+  let list = repos.filter((r) => {
+    if (!q) return true;
+    const hay = [r.name, r.description, r.language, ...(r.topics || [])].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+
+  const by = {
+    updated: (a, b) => String(b.pushed_at || '').localeCompare(String(a.pushed_at || '')),
+    name: (a, b) => a.name.localeCompare(b.name),
+    stars: (a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0),
+    size: (a, b) => (b.size || 0) - (a.size || 0),
+  }[sort] || (() => 0);
+  list = [...list].sort(by);
+
+  el('grid').innerHTML = list.map(cardHTML).join('');
+  el('emptyState').innerHTML = list.length ? '' :
+    `<div class="empty">Nothing matches <code>${esc(el('q').value)}</code>.<br>Try a language, a topic, or part of a description.</div>`;
+
+  // stats reflect ALL repos, not the filtered view
+  const stars = repos.reduce((a, r) => a + (r.stargazers_count || 0), 0);
+  const forks = repos.reduce((a, r) => a + (r.forks_count || 0), 0);
+  el('statStars').textContent = repos.some((r) => r.stargazers_count != null) ? stars : '—';
+  el('statForks').textContent = repos.some((r) => r.forks_count != null) ? forks : '—';
+  el('repoCount').textContent = repos.length;
+}
+
+// ── boot ───────────────────────────────────────────────────────────────────
+repos = await fetchRepos();
+render();
+el('q').addEventListener('input', render);
+el('sort').addEventListener('change', render);
+if (usedCache) el('notice').innerHTML = '';
+
+// expose for quick manual checks in devtools
+window.__repos = () => repos;
+</script>
 </body>
 </html>

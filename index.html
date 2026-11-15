@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>0xnothings — tools</title>
 <meta name="description" content="234 zero-dependency Node.js CLI tools. Recon, devops, web, data. Node standard library only.">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<meta name="theme-color" content="#0a0806">
+<meta property="og:title" content="0xnothings — tools">
+<meta property="og:description" content="234 zero-dependency Node.js CLI tools on the Node standard library alone.">
+<meta property="og:type" content="website">
 <meta name="color-scheme" content="dark light">
 <style>
 /* ------------------------------------------------------------------
@@ -70,7 +75,8 @@ a:hover { color: var(--ember-2); }
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
 .bar-in { display: flex; align-items: center; gap: 12px; height: 56px; }
-.mark { color: var(--ember); font-size: 17px; line-height: 1; }
+.mark { color: var(--ember); display: inline-flex; align-items: center; }
+.mark svg { width: 22px; height: 22px; display: block; }
 .bar-title { font-weight: 620; letter-spacing: -.01em; white-space: nowrap; }
 .bar-title span { color: var(--ink-3); font-weight: 400; }
 .grow { flex: 1 1 auto; }
@@ -88,10 +94,12 @@ a:hover { color: var(--ember-2); }
 .avatar {
   flex: 0 0 auto; width: 84px; height: 84px; border-radius: 22px;
   display: grid; place-items: center;
-  background: linear-gradient(150deg, var(--ember), var(--gold));
-  color: #1c0f05; font: 800 30px/1 ui-monospace, monospace; letter-spacing: -.05em;
-  box-shadow: 0 12px 32px -16px var(--ember);
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  box-shadow: 0 12px 32px -18px var(--ember), inset 0 1px 0 rgba(255,255,255,.04);
 }
+.avatar svg { width: 52px; height: 52px; display: block; }
+:root[data-theme="dark"] .avatar { background: #14100c; }
 .hero-txt { min-width: 0; padding-top: 2px; }
 h1 { margin: 0 0 8px; font-size: 29px; line-height: 1.2; letter-spacing: -.028em; font-weight: 660; }
 h1 em { font-style: normal; color: var(--ember); }
@@ -211,7 +219,8 @@ select:focus { outline: none; border-color: var(--ember); }
 
 @media (max-width: 560px) {
   h1 { font-size: 22px; } .hero { padding: 32px 0 22px; }
-  .avatar { width: 60px; height: 60px; height: 60px; border-radius: 16px; font-size: 21px; }
+  .avatar { width: 60px; height: 60px; border-radius: 16px; }
+  .avatar svg { width: 36px; height: 36px; }
   .hero-row { gap: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -223,7 +232,20 @@ select:focus { outline: none; border-color: var(--ember); }
 
 <div class="bar">
   <div class="shell bar-in">
-    <span class="mark">◆</span>
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="oxnTop" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="var(--ember-2)"/>
+            <stop offset="1" stop-color="var(--gold)"/>
+          </linearGradient>
+        </defs>
+        <path d="M32 4.5 L55.2 17.7 L55.2 44.3 L32 57.5 L8.8 44.3 L8.8 17.7 Z"
+              stroke="url(#oxnTop)" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M23 23 L41 41 M41 23 L23 41"
+              stroke="url(#oxnTop)" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+    </span>
     <span class="bar-title">0xnothings <span class="mono">/ tools</span></span>
     <span class="grow"></span>
     <button class="btn" id="themeBtn" type="button" aria-live="polite">◐ <span id="themeLabel">dark</span></button>
@@ -235,7 +257,20 @@ select:focus { outline: none; border-color: var(--ember); }
 
   <section class="hero">
     <div class="hero-row">
-      <div class="avatar" aria-hidden="true">0x</div>
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="oxnHero" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="var(--ember-2)"/>
+              <stop offset="1" stop-color="var(--gold)"/>
+            </linearGradient>
+          </defs>
+          <path d="M32 4.5 L55.2 17.7 L55.2 44.3 L32 57.5 L8.8 44.3 L8.8 17.7 Z"
+                stroke="url(#oxnHero)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M23 23 L41 41 M41 23 L23 41"
+                stroke="url(#oxnHero)" stroke-width="5.6" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div class="hero-txt">
         <h1>Nothinganywhere <em class="mono">· 0xnothings</em></h1>
         <p class="tagline">

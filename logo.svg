@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="0xnothings">
+  <title>0xnothings</title>
+  <!--
+    Mark concept: the hexadecimal prefix "0x" drawn as geometry.
+    The hexagonal shell is the 0x prefix; the cross inside is the x.
+    Reading it as a void with something crossing it is intentional.
+    Theme-aware: the gradient stops follow the page palette, so the mark
+    re-tints with the theme instead of being baked to one colour.
+  -->
+  <defs>
+    <linearGradient id="oxnGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9153"/>
+      <stop offset="1" stop-color="#e8b04a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- hexagonal shell -->
+  <path d="M32 3.5 L56.7 17.75 L56.7 46.25 L32 60.5 L7.3 46.25 L7.3 17.75 Z"
+        fill="none" stroke="url(#oxnGrad)" stroke-width="3.4"
+        stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- the x -->
+  <path d="M22.5 22.5 L41.5 41.5 M41.5 22.5 L22.5 41.5"
+        fill="none" stroke="url(#oxnGrad)" stroke-width="6.2"
+        stroke-linecap="round"/>
+</svg>

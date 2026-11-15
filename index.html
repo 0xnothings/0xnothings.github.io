@@ -3,268 +3,251 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>0xnothings — tools</title>
-<meta name="description" content="234 zero-dependency Node.js CLI tools. Recon, devops, web, data. Node standard library only.">
-<link rel="icon" type="image/png" sizes="48x48" href="./avatar-48.png">
-<link rel="apple-touch-icon" href="./avatar-256.png">
-<meta name="theme-color" content="#0a0806">
-<meta property="og:title" content="0xnothings — tools">
-<meta property="og:description" content="234 zero-dependency Node.js CLI tools on the Node standard library alone.">
-<meta property="og:image" content="./avatar-256.png">
+<title>Makisig Cipher | 0xnothings — Developer &amp; Builder</title>
+<meta name="description" content="Makisig Cipher, also known as 0xnothings. Building useful tools, exploring systems, and turning ideas into code. Explore my projects and developer tool collections.">
+<link rel="icon" type="image/png" sizes="48x48" href="https://0xnothings.github.io/avatar-48.png">
+<link rel="apple-touch-icon" href="https://0xnothings.github.io/avatar-256.png">
+<meta name="theme-color" content="#100e12">
+<meta property="og:title" content="Makisig Cipher | 0xnothings">
+<meta property="og:description" content="Building useful tools, exploring systems, and turning ideas into code. Discover projects by Makisig Cipher.">
+<meta property="og:image" content="https://0xnothings.github.io/avatar-256.png">
 <meta property="og:type" content="website">
 <meta name="color-scheme" content="dark light">
 <style>
-/* ------------------------------------------------------------------
-   Palette: amber / copper on warm void. Deliberately not GitHub blue.
-   Dark default, light opt-in, choice persisted.
-   ------------------------------------------------------------------ */
+
+:root {
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Segoe UI", Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  color-scheme: dark;
+}
 :root[data-theme="dark"] {
-  --bg:         #0a0806;
-  --surface:    #14100c;
-  --surface-2:  #1b1611;
-  --surface-3:  #241d16;
-  --line:       #2e2620;
-  --line-2:     #40352b;
-  --ink:        #f4efe8;
-  --ink-2:      #b8aa99;
-  --ink-3:      #7d6f60;
-  --ember:      #e8763a;
-  --ember-2:    #ff9153;
-  --gold:       #e8b04a;
-  --gold-2:     #f7cd7a;
-  --mint:       #5eead4;
-  --focus:      rgba(232,118,58,.35);
+  --bg:#100e12; --surface:#1a161c; --surface-2:#231d24; --surface-3:#30252e;
+  --line:#352b35; --line-2:#695348; --ink:#f5efe5; --ink-2:#c4b6bb; --ink-3:#a3959f;
+  --ember:#c76b80; --ember-2:#efa0ad; --gold:#d0b27c; --gold-2:#e7cfa6; --mint:#d0b27c;
+  --focus:rgba(199,107,128,.24); --glass:rgba(16,14,18,.9); --shadow:0 20px 60px rgba(0,0,0,.24);
+  --wash:rgba(117,30,54,.20); --gold-wash:rgba(195,163,106,.06); --stripe:rgba(220,189,142,.045);
 }
 :root[data-theme="light"] {
-  --bg:         #fbf8f3;
-  --surface:    #ffffff;
-  --surface-2:  #f7f1e8;
-  --surface-3:  #efe6d8;
-  --line:       #e4d9c8;
-  --line-2:     #cdbda4;
-  --ink:        #221b14;
-  --ink-2:      #54483a;
-  --ink-3:      #857460;
-  --ember:      #bc4f1c;
-  --ember-2:    #9c3f14;
-  --gold:       #8f6a12;
-  --gold-2:     #74550e;
-  --mint:       #0f766e;
-  --focus:      rgba(188,79,28,.25);
+  color-scheme:light;
+  --bg:#f6f1e9; --surface:#fffcf7; --surface-2:#eee5e0; --surface-3:#e4d7d2;
+  --line:#ded2c8; --line-2:#b39a7a; --ink:#291820; --ink-2:#624852; --ink-3:#79616a;
+  --ember:#963248; --ember-2:#712035; --gold:#7c5a25; --gold-2:#6e4b1b; --mint:#7c5a25;
+  --focus:rgba(150,50,72,.16); --glass:rgba(246,241,233,.92); --shadow:0 20px 60px rgba(57,29,37,.08);
+  --wash:rgba(142,24,38,.07); --gold-wash:rgba(195,163,106,.09); --stripe:rgba(102,68,41,.04);
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:112px; }
+body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.6 var(--sans); -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(ellipse 900px 650px at 80% 2%,var(--wash),transparent 75%),radial-gradient(ellipse 800px 600px at 5% 35%,var(--gold-wash),transparent 70%); }
+button,input,select { font:inherit; }
+button,a,input,select { -webkit-tap-highlight-color:transparent; }
+a { color:var(--gold-2); text-decoration:none; }
+a:hover { color:var(--ember-2); }
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid var(--gold); outline-offset:4px; }
+svg { flex-shrink:0; }
+button { cursor:pointer; }
+[hidden] { display:none!important; }
+.mono { font-family:var(--mono); }
+.shell { width:min(100%,1180px); margin-inline:auto; padding-inline:32px; }
+.skip-link { position:fixed; left:16px; top:-100px; padding:10px 16px; z-index:100; background:var(--surface); border:1px solid var(--gold); }
+.skip-link:focus { top:12px; }
+.bar { position:sticky; top:0; z-index:60; background:var(--glass); backdrop-filter:blur(20px); border-bottom:1px solid var(--line); }
+.bar-in { display:flex; align-items:center; gap:14px; min-height:82px; padding-block:14px; }
+.brand { display:flex; align-items:center; gap:12px; min-width:0; color:var(--ink); }
+.brand:hover { color:var(--ink); }
+.mark { width:38px; height:38px; border-radius:11px; object-fit:cover; border:1px solid var(--line-2); background:var(--surface); }
+.brand-copy { display:flex; flex-direction:column; line-height:1.3; }
+.bar-title { font-size:15px; font-weight:700; letter-spacing:.01em; }
+.brand-handle { font:10px/1.6 var(--mono); color:var(--gold); letter-spacing:.14em; }
+.social-nav { display:flex; align-items:center; gap:8px; margin-left:auto; }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:42px; padding:0 14px;
+  border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink-2); font:600 12px/1 var(--sans); white-space:nowrap;
+  transition:background .18s,border-color .18s,transform .18s,color .18s; }
+.btn svg { width:16px; height:16px; }
+.btn:hover { color:var(--ink); background:var(--surface-2); border-color:var(--line-2); transform:translateY(-1px); }
+.btn-github { border-color:var(--line-2); color:var(--gold-2); }
+.btn[aria-disabled="true"] { cursor:default; color:var(--ink-3); }
+.btn[aria-disabled="true"]:hover { transform:none; background:var(--surface); border-color:var(--line); color:var(--ink-3); }
+.theme-toggle { margin-left:2px; flex:0 0 44px; width:44px; height:44px; padding:0; border-radius:50%; border-color:var(--line-2); color:var(--gold); }
+.theme-toggle svg { width:18px; height:18px; }
+:root[data-theme="dark"] .moon-icon,:root[data-theme="light"] .sun-icon { display:none; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.hero { padding:68px 0 0; }
+.hero-row { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:40px; align-items:center; }
+.hero-txt { min-width:0; }
+.eyebrow { display:flex; align-items:center; gap:10px; margin:0 0 20px; color:var(--gold); font:500 10px/1.5 var(--mono); letter-spacing:.18em; text-transform:uppercase; }
+.eyebrow::before { content:""; height:1px; width:28px; background:var(--gold); }
+h1 { margin:0 0 18px; font-size:clamp(42px,5.8vw,72px); font-weight:680; letter-spacing:-.055em; line-height:1.03; }
+h1 em { font-style:normal; color:var(--gold-2); }
+.tagline { margin:0; max-width:54ch; color:var(--ink-2); font-size:16px; line-height:1.85; }
+.tagline strong { color:var(--ink); font-weight:550; }
+.hero-motto { margin:19px 0 0; color:var(--ember); font:12px/1.7 var(--mono); }
+.hero-actions { display:flex; align-items:center; flex-wrap:wrap; gap:20px; margin-top:28px; }
+.primary-link { display:inline-flex; align-items:center; gap:14px; padding:13px 18px; background:#82233a; color:#fff4ea; border:1px solid #ae5364; border-radius:10px; font-size:13px; font-weight:600; box-shadow:0 6px 20px rgba(110,22,47,.16); transition:background .18s,transform .18s; }
+.primary-link:hover { color:#fff4ea; background:#9c304a; transform:translateY(-2px); }
+.primary-link svg { width:17px; height:17px; }
+.text-link { font-size:12px; color:var(--ink-2); border-bottom:1px solid var(--line-2); padding-bottom:3px; }
+.hero-visual { position:relative; width:300px; height:310px; display:grid; place-items:center; isolation:isolate; }
+.hero-visual::before,.hero-visual::after { content:""; position:absolute; z-index:-1; border:1px solid var(--line); border-radius:50%; width:275px; height:275px; }
+.hero-visual::after { width:228px; height:228px; border-style:dashed; border-color:var(--line-2); opacity:.65; }
+.orbit-line { position:absolute; left:0; right:0; top:50%; height:1px; background:linear-gradient(90deg,transparent,var(--line-2),transparent); z-index:-1; transform:rotate(-35deg); }
+.avatar { width:174px; height:174px; position:relative; border-radius:50%; overflow:hidden; display:grid; place-items:center; border:1px solid var(--line-2); background:var(--surface); box-shadow:0 0 70px rgba(142,24,38,.13),var(--shadow); }
+.avatar img { width:100%; height:100%; position:relative; object-fit:cover; display:block; }
+.visual-label { position:absolute; bottom:0; font:10px/1.5 var(--mono); letter-spacing:.18em; color:var(--gold); text-transform:uppercase; }
+.orbit-dot { position:absolute; width:7px; height:7px; border-radius:50%; background:var(--gold); top:52px; right:40px; box-shadow:0 0 0 5px var(--bg); }
+.pills { display:flex; flex-wrap:wrap; gap:7px; margin-top:34px; }
+.pill { display:inline-flex; align-items:center; gap:5px; font:10px/1.4 var(--mono); color:var(--ink-3); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:7px 10px; }
+.pill b { font-weight:600; color:var(--ink-2); }
+.pill.hot b { color:var(--gold); }
+.totals { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:32px; padding:24px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.tile { min-width:0; padding:0 24px; border-left:1px solid var(--line); }
+.tile:first-child { border-left:0; padding-left:0; }
+.tile b { display:block; color:var(--ink); font:500 25px/1.3 var(--mono); letter-spacing:-.045em; overflow-wrap:anywhere; }
+.tile:last-child b { font-size:19px; line-height:1.7; }
+.tile span { display:block; margin-top:7px; font:10px/1.4 var(--mono); color:var(--ink-3); text-transform:uppercase; letter-spacing:.1em; }
+.sec { margin-top:50px; }
+.sec-head { display:flex; align-items:center; flex-wrap:wrap; gap:8px 14px; margin-bottom:22px; }
+.sec-head h2 { font-size:22px; line-height:1.3; letter-spacing:-.03em; font-weight:600; margin:0; }
+.sec-head h2::before { content:""; display:inline-block; width:4px; height:17px; background:var(--ember); margin-right:12px; border-radius:2px; }
+.sec-head .count { font:10px/1.5 var(--mono); padding:3px 8px; border-radius:5px; color:var(--gold); border:1px solid var(--line); }
+.sec-head p { margin:3px 0 0; flex-basis:100%; font-size:13px; color:var(--ink-3); }
+.featured { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:1fr; }
+.fcard { position:relative; min-width:0; display:flex; flex-direction:column; gap:16px; padding:24px; border:1px solid var(--line); border-radius:16px;
+  background:linear-gradient(140deg,var(--surface),var(--surface)); overflow:hidden; transition:border-color .2s,transform .2s,box-shadow .2s; }
+.fcard::before { content:""; position:absolute; left:24px; right:24px; top:0; height:1px; background:linear-gradient(90deg,var(--ember),var(--gold),transparent); opacity:.8; }
+.fcard::after { content:""; position:absolute; width:140px; height:140px; right:-70px; top:-70px; border:1px solid var(--line); border-radius:50%; pointer-events:none; }
+.fcard:hover { transform:translateY(-3px); border-color:var(--line-2); box-shadow:var(--shadow); }
+.fcard-category { display:flex; justify-content:space-between; align-items:center; font:9px/1.4 var(--mono); color:var(--gold); text-transform:uppercase; letter-spacing:.16em; }
+.fcard-index { color:var(--ink-3); }
+.fcard-top { display:flex; gap:12px; align-items:flex-start; }
+.fcard-top h3 { min-width:0; margin:0; font:600 18px/1.4 var(--mono); letter-spacing:-.05em; overflow-wrap:anywhere; }
+.fcard-top h3 a { color:var(--ink); }
+.fcard-top h3 a:hover { color:var(--gold); }
+.stars { margin-left:auto; flex-shrink:0; font:11px/1.7 var(--mono); color:var(--gold); }
+.fcard p { margin:0; font-size:13px; line-height:1.75; color:var(--ink-2); }
+.fcard p.clamp { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:3.5em; }
+.meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:2px 0 0; padding-top:17px; border-top:1px solid var(--line); }
+.meta div { min-width:0; }
+.meta dt { font:9px/1.6 var(--mono); color:var(--ink-3); letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px; }
+.meta dd { margin:0; font:12px/1.5 var(--mono); color:var(--ink); overflow-wrap:anywhere; }
+.meta dd.live { color:var(--gold); }
+.tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:auto; }
+.tags .t { font:9px/1.5 var(--mono); color:var(--ink-3); background:var(--surface-2); border:1px solid var(--line); padding:4px 7px; border-radius:5px; overflow-wrap:anywhere; max-width:100%; }
+.controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; margin-bottom:16px; }
+.field { position:relative; min-width:0; }
+.field svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink-3); pointer-events:none; }
+.field input { min-width:0; width:100%; height:46px; padding:0 14px 0 40px; background:var(--surface); border:1px solid var(--line); border-radius:10px; color:var(--ink); font-size:13px; }
+.field input::placeholder { color:var(--ink-3); }
+select { min-width:0; height:46px; padding:0 32px 0 14px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink-2); font-size:12px; cursor:pointer; }
+.rows { border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.row { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1.8fr) auto; gap:6px 16px; align-items:center; padding:18px; background:var(--surface); border-top:1px solid var(--line); }
+.row:first-child { border-top:0; }
+.row:hover { background:var(--surface-2); }
+.row .rname { min-width:0; font:12px/1.5 var(--mono); overflow-wrap:anywhere; }
+.row .rname a { color:var(--ink); }
+.row .rdesc { font-size:12px; color:var(--ink-3); min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.row .rmeta { font:10px/1.5 var(--mono); color:var(--ink-3); text-align:right; }
+.note { margin-top:24px; padding:14px 18px; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:10px; font-size:12px; color:var(--ink-2); }
+.note b { color:var(--gold); }
+.empty { grid-column:1/-1; padding:40px 18px; text-align:center; color:var(--ink-3); font-size:13px; border:1px dashed var(--line); border-radius:12px; }
+.empty code { color:var(--gold); }
+.sk { height:266px; border:1px solid var(--line); background:var(--surface); border-radius:16px; overflow:hidden; position:relative; }
+.sk::after { content:""; position:absolute; inset:0; transform:translateX(-100%); background:linear-gradient(90deg,transparent,var(--surface-3),transparent); animation:sweep 1.6s infinite; }
+@keyframes sweep { to { transform:translateX(100%); } }
+.foot { margin-top:64px; border-top:1px solid var(--line); padding:30px 0 40px; }
+.footer-top { display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.footer-brand { color:var(--ink-2); font-size:13px; }
+.footer-brand span { color:var(--gold); }
+.foot nav { display:flex; gap:12px 20px; flex-wrap:wrap; }
+.foot nav a { font-size:11px; color:var(--ink-3); }
+.footer-note { margin-top:16px; color:var(--ink-3); font-size:10px; line-height:1.7; }
+@media (max-width:900px) {
+  .hero-row { grid-template-columns:minmax(0,1fr) 240px; gap:22px; }
+  .hero-visual { width:240px; height:270px; }
+  .hero-visual::before { width:228px; height:228px; } .hero-visual::after { width:195px; height:195px; }
+  .avatar { width:152px; height:152px; } .orbit-dot { right:28px; top:50px; }
+  .bar-in { gap:10px; } .btn { padding-inline:11px; }
+  .row { grid-template-columns:minmax(0,1fr) auto; } .row .rdesc { grid-column:1/-1; grid-row:2; } .row .rmeta { grid-column:2; grid-row:1; }
+}
+@media (max-width:680px) {
+  .shell { padding-inline:20px; }
+  .bar-in { display:grid; grid-template-columns:minmax(0,1fr) 44px; row-gap:12px; padding-block:12px; }
+  .brand { grid-column:1; grid-row:1; } .theme-toggle { grid-column:2; grid-row:1; margin:0; }
+  .social-nav { grid-column:1/-1; grid-row:2; width:100%; margin:0; gap:8px; }
+  .social-nav .btn { flex:1; min-width:0; padding-inline:8px; min-height:40px; }
+  .hero { padding-top:40px; } .hero-row { grid-template-columns:minmax(0,1fr); gap:30px; }
+  .hero-visual { display:none; }
+  h1 { font-size:clamp(39px,10vw,60px); } .tagline { font-size:14px; line-height:1.85; }
+  .eyebrow { font-size:9px; letter-spacing:.12em; margin-bottom:17px; }
+  .hero-motto { font-size:10px; } .hero-actions { gap:17px; margin-top:24px; }
+  .pills { margin-top:26px; gap:6px; } .pill { font-size:9px; padding:6px 8px; }
+  .totals { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 0; padding:22px 0; margin-top:26px; }
+  .tile { padding-inline:20px; } .tile:nth-child(3) { border-left:0; padding-left:0; }
+  .tile b { font-size:24px; } .tile:last-child b { font-size:17px; line-height:1.85; }
+  .featured { grid-template-columns:minmax(0,1fr); gap:14px; }
+  .fcard { padding:22px; } .sec { margin-top:38px; } .sec-head h2 { font-size:20px; }
+  .sec-head p { font-size:12px; } .controls { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .row { padding:15px; } .row .rmeta { font-size:9px; max-width:128px; }
+  .footer-top { gap:16px; } .foot { margin-top:42px; }
+}
+@media (max-width:360px) {
+  .shell { padding-inline:15px; } .bar-title { font-size:14px; } .brand { gap:9px; }
+  .btn { font-size:11px; gap:6px; } .btn svg { width:15px; height:15px; }
+  .hero-actions { gap:13px; } .primary-link { padding:12px 14px; font-size:12px; } .text-link { font-size:11px; }
+  .fcard { padding:18px; } .fcard-top h3 { font-size:16px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0; background: var(--bg); color: var(--ink);
-  font: 16px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  background-image:
-    radial-gradient(880px 380px at 8% -10%, rgba(232,118,58,.13), transparent 70%),
-    radial-gradient(680px 320px at 95% 0%, rgba(232,176,74,.08), transparent 72%);
-  background-attachment: fixed;
-}
-a { color: var(--gold-2); text-decoration: none; }
-a:hover { color: var(--ember-2); }
-.mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
-
-/* one consistent container, one consistent gutter */
-.shell { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-@media (max-width: 560px) { .shell { padding: 0 16px; } }
-
-/* ── top bar ──────────────────────────────────────────────── */
-.bar { position: sticky; top: 0; z-index: 60;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
-.bar-in { display: flex; align-items: center; gap: 12px; height: 56px; }
-.mark { display: inline-flex; align-items: center; }
-.mark img { width: 26px; height: 26px; border-radius: 7px; display: block;
-  background: #14100c; box-shadow: 0 0 0 1px var(--line-2); }
-.bar-title { font-weight: 620; letter-spacing: -.01em; white-space: nowrap; }
-.bar-title span { color: var(--ink-3); font-weight: 400; }
-.grow { flex: 1 1 auto; }
-.btn {
-  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px;
-  background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
-  color: var(--ink-2); font: 13px/1 inherit; cursor: pointer; white-space: nowrap;
-}
-.btn:hover { border-color: var(--line-2); color: var(--ink); }
-.btn:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
-
-/* ── hero ─────────────────────────────────────────────────── */
-.hero { padding: 52px 0 30px; }
-.hero-row { display: flex; gap: 22px; align-items: flex-start; }
-.avatar {
-  flex: 0 0 auto; width: 84px; height: 84px; border-radius: 22px;
-  display: grid; place-items: center; overflow: hidden;
-  background: #14100c;
-  border: 1px solid var(--line-2);
-  box-shadow: 0 12px 32px -18px var(--ember), inset 0 1px 0 rgba(255,255,255,.04);
-}
-.avatar img { width: 100%; height: 100%; display: block; object-fit: cover; }
-:root[data-theme="light"] .avatar { background: #f7f1e8; }
-.hero-txt { min-width: 0; padding-top: 2px; }
-h1 { margin: 0 0 8px; font-size: 29px; line-height: 1.2; letter-spacing: -.028em; font-weight: 660; }
-h1 em { font-style: normal; color: var(--ember); }
-.tagline { margin: 0 0 16px; color: var(--ink-2); font-size: 15.5px; max-width: 74ch; }
-.tagline .mono { color: var(--gold-2); }
-.pills { display: flex; flex-wrap: wrap; gap: 7px; }
-.pill { font: 12px/1 var(--mono); color: var(--ink-2); background: var(--surface);
-  border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
-.pill b { color: var(--ink); font-weight: 620; }
-.pill.hot { border-color: var(--line-2); background: var(--surface-2); }
-.pill.hot b { color: var(--ember-2); }
-
-/* ── stat strip: even, gapped, never squeezed ─────────────── */
-.totals { display: grid; gap: 10px; margin-top: 26px;
-  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); }
-.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-  padding: 14px 16px; }
-.tile b { display: block; font: 640 22px/1.15 var(--mono); color: var(--gold); margin-bottom: 3px; }
-.tile span { font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .07em; }
-
-/* ── section headers: the structure the page was missing ──── */
-.sec { margin-top: 46px; }
-.sec-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
-  padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
-.sec-head h2 { margin: 0; font-size: 15px; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--ink-2); font-weight: 640; }
-.sec-head .count { font: 12px var(--mono); color: var(--ink-3); }
-.sec-head p { margin: 0; flex-basis: 100%; color: var(--ink-3); font-size: 13.5px; }
-
-/* ── featured: the four tool repos, full detail ───────────── */
-/* grid-auto-rows:1fr makes every ROW match the tallest, and flex inside the
-   card pushes the tag block to the bottom, so all four cards are identical
-   height regardless of how many topics a repo happens to have. */
-.featured { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); grid-auto-rows: 1fr; }
-@media (min-width: 1000px) { .featured { grid-template-columns: repeat(2, 1fr); } }
-
-.fcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-  padding: 18px; display: flex; flex-direction: column; gap: 12px;
-  border-left: 2px solid var(--ember); transition: border-color .15s, box-shadow .15s, transform .15s; }
-.fcard:hover { border-color: var(--line-2); border-left-color: var(--ember-2);
-  box-shadow: 0 16px 36px -22px rgba(0,0,0,.75); transform: translateY(-2px); }
-.fcard-top { display: flex; align-items: baseline; gap: 10px; }
-.fcard-top h3 { margin: 0; font: 620 16px/1.3 var(--mono); letter-spacing: -.015em; }
-.fcard-top h3 a { color: var(--ink); }
-.fcard-top h3 a:hover { color: var(--ember-2); }
-.stars { margin-left: auto; font: 12.5px var(--mono); color: var(--gold); white-space: nowrap; }
-.fcard p { margin: 0; font-size: 14px; color: var(--ink-2); }
-/* description gets a fixed 2-line slot so every card aligns */
-.fcard p.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden; min-height: 2.9em; }
-
-/* meta as a real 2-column definition grid: never wraps into a mess */
-.meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px 14px; border-top: 1px solid var(--line); padding-top: 12px; margin-top: auto; }
-.meta div { min-width: 0; }
-.meta dt { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase;
-  letter-spacing: .08em; margin-bottom: 2px; }
-.meta dd { margin: 0; font: 13px/1.35 var(--mono); color: var(--ink);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.meta dd.live { color: var(--mint); }
-.meta dd.warn { color: var(--gold); }
-
-.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 2px; }
-.tags .t { font: 11px/1 var(--mono); color: var(--ink-3); background: var(--surface-2);
-  border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; white-space: nowrap; }
-
-/* ── rest of the repos: compact, scannable, no clutter ─────── */
-.rows { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.row { display: grid; gap: 4px 14px; padding: 13px 16px;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 2.4fr) auto;
-  align-items: center; background: var(--surface); border-top: 1px solid var(--line); }
-.row:first-child { border-top: 0; }
-.row:hover { background: var(--surface-2); }
-.row .rname { font: 13.5px/1.3 var(--mono); color: var(--ink); min-width: 0;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.row .rdesc { font-size: 13px; color: var(--ink-3); min-width: 0;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.row .rmeta { font: 11.5px/1 var(--mono); color: var(--ink-3); white-space: nowrap; text-align: right; }
-@media (max-width: 720px) {
-  .row { grid-template-columns: 1fr auto; }
-  .row .rdesc { grid-column: 1 / -1; }
-}
-
-/* ── controls, one aligned row ────────────────────────────── */
-.controls { display: grid; gap: 10px; margin-bottom: 14px;
-  grid-template-columns: minmax(0, 1fr) auto; }
-@media (max-width: 560px) { .controls { grid-template-columns: 1fr; } }
-.field { position: relative; }
-.field svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; }
-.field input { width: 100%; height: 40px; padding: 0 14px 0 37px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
-  color: var(--ink); font: 14.5px inherit; }
-.field input::placeholder { color: var(--ink-3); }
-.field input:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px var(--focus); }
-select { height: 40px; padding: 0 12px; background: var(--surface); border: 1px solid var(--line);
-  border-radius: 10px; color: var(--ink-2); font: 14px inherit; cursor: pointer; }
-select:focus { outline: none; border-color: var(--ember); }
-
-/* ── states ───────────────────────────────────────────────── */
-.note { border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--surface);
-  border-radius: 10px; padding: 12px 15px; color: var(--ink-2); font-size: 13.5px; margin-bottom: 16px; }
-.note b { color: var(--gold-2); }
-.empty { text-align: center; padding: 48px 20px; color: var(--ink-3);
-  border: 1px dashed var(--line); border-radius: 12px; }
-.empty code { color: var(--gold); font-family: var(--mono); }
-.sk { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
-  height: 172px; overflow: hidden; position: relative; }
-.sk::after { content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, var(--surface-3), transparent);
-  animation: sweep 1.4s infinite; }
-@keyframes sweep { to { transform: translateX(100%); } }
-
-/* ── footer ───────────────────────────────────────────────── */
-.foot { margin-top: 56px; border-top: 1px solid var(--line); padding: 26px 0 56px; color: var(--ink-3); font-size: 13.5px; }
-.foot nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 12px; }
-.foot nav a { color: var(--ink-2); }
-
-@media (max-width: 560px) {
-  h1 { font-size: 22px; } .hero { padding: 32px 0 22px; }
-  .avatar { width: 60px; height: 60px; border-radius: 16px; }
-  .avatar svg { width: 36px; height: 36px; }
-  .hero-row { gap: 14px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
-}
 </style>
 </head>
 <body>
 
-<div class="bar">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="bar">
   <div class="shell bar-in">
-    <img class="mark" src="./avatar-256.png" alt="" width="26" height="26">
-    <span class="bar-title">0xnothings <span class="mono">/ tools</span></span>
-    <span class="grow"></span>
-    <button class="btn" id="themeBtn" type="button" aria-live="polite">◐ <span id="themeLabel">dark</span></button>
-    <a class="btn" href="https://github.com/0xnothings" rel="noopener">GitHub</a>
+    <a class="brand" href="#main" aria-label="Makisig Cipher home">
+      <img class="mark" src="https://0xnothings.github.io/avatar-256.png" alt="" width="38" height="38">
+      <span class="brand-copy"><span class="bar-title">Makisig Cipher</span><span class="brand-handle">@0xnothings</span></span>
+    </a>
+    <nav class="social-nav" aria-label="Social links">
+      <a class="btn btn-github" href="https://github.com/0xnothings" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.4-1.22.72-1.5-2.5-.28-5.13-1.25-5.13-5.57 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.13-1.44 3.07-1.15 3.07-1.15.61 1.55.23 2.7.12 2.98.72.79 1.15 1.79 1.15 3.02 0 4.33-2.63 5.28-5.14 5.56.41.35.77 1.03.77 2.08v3.11c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg><span>GitHub</span></a>
+      <a class="btn" id="telegramLink" role="link" aria-disabled="true" title="Telegram contact is not available yet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-4 18-6-5-4 3 1-6-6-2L21 3Z"/><path d="m8 13 9-6-6 9"/></svg><span>Telegram</span></a>
+      <a class="btn" id="emailLink" role="link" aria-disabled="true" title="Email contact is not available yet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><span>Email</span></a>
+    </nav>
+    <button class="btn theme-toggle" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="true"><svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg><svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14A8.8 8.8 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z"/></svg><span id="themeLabel" class="sr-only">Dark mode</span></button>
   </div>
-</div>
+</header>
 
-<main class="shell">
+<main class="shell" id="main">
 
-  <section class="hero">
+  <section class="hero" aria-labelledby="heroTitle">
     <div class="hero-row">
-      <div class="avatar"><img src="./avatar-256.png" alt="0xnothings" width="84" height="84"></div>
       <div class="hero-txt">
-        <h1>Nothinganywhere <em class="mono">· 0xnothings</em></h1>
-        <p class="tagline">
-          Zero-dependency Node.js CLI tools. Every one runs on the standard library alone —
-          no <span class="mono">npm install</span>, no build step, no native modules.
-        </p>
-        <div class="pills">
-          <span class="pill mono"><b>234</b> tools</span>
-          <span class="pill mono"><b>41.5k</b> lines</span>
-          <span class="pill mono"><b>0</b> dependencies</span>
-          <span class="pill hot mono"><b>94</b> output assertions</span>
-          <span class="pill mono">MIT</span>
+        <p class="eyebrow">Developer &nbsp; / &nbsp; Builder &nbsp; / &nbsp; Curious mind</p>
+        <h1 id="heroTitle">Makisig <em>Cipher.</em></h1>
+        <p class="tagline">I'm <strong>0xnothings</strong>. I build useful tools, explore how systems work, and turn ideas into code.</p>
+        <p class="hero-motto">From nothing, to something, to everything.</p>
+        <div class="hero-actions">
+          <a class="primary-link" href="#collections">Explore the tools <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a class="text-link" href="https://github.com/0xnothings?tab=repositories" target="_blank" rel="noopener noreferrer">All GitHub repositories ↗</a>
         </div>
       </div>
+      <div class="hero-visual">
+        <span class="orbit-line" aria-hidden="true"></span><span class="orbit-dot" aria-hidden="true"></span>
+        <div class="avatar"><img src="https://0xnothings.github.io/avatar-256.png" alt="Makisig Cipher profile emblem" width="174" height="174" decoding="async"></div>
+        <span class="visual-label">Think · Build · Explore</span>
+      </div>
     </div>
-
-    <div class="totals">
+    <div class="pills" aria-label="Tool collection details">
+      <span class="pill"><b>234</b> tools</span>
+      <span class="pill"><b>41.5k</b> lines</span>
+      <span class="pill"><b>0</b> dependencies</span>
+      <span class="pill hot"><b>94</b> output assertions</span>
+      <span class="pill">MIT licensed</span>
+    </div>
+    <div class="totals" aria-label="GitHub statistics">
       <div class="tile"><b id="tRepos">—</b><span>repositories</span></div>
       <div class="tile"><b id="tStars">—</b><span>total stars</span></div>
       <div class="tile"><b id="tForks">—</b><span>total forks</span></div>
@@ -272,13 +255,13 @@ select:focus { outline: none; border-color: var(--ember); }
     </div>
   </section>
 
-  <div id="notice"></div>
+  <div id="notice" role="status"></div>
 
-  <section class="sec">
+  <section class="sec" id="collections">
     <div class="sec-head">
       <h2>Tool collections</h2>
       <span class="count mono" id="cTools">—</span>
-      <p>The four main repos. One file per tool, a shared helper, and three test layers in CI on Node 18, 20 and 22.</p>
+      <p>Focused collections for security, DevOps, the web, and data. Practical tools, ready to explore.</p>
     </div>
     <div class="featured" id="featured">
       <div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div>
@@ -313,22 +296,45 @@ select:focus { outline: none; border-color: var(--ember); }
 
 <footer class="foot">
   <div class="shell">
-    <nav>
-      <a href="https://github.com/0xnothings/tools-security">tools-security</a>
-      <a href="https://github.com/0xnothings/tools-devops">tools-devops</a>
-      <a href="https://github.com/0xnothings/tools-web">tools-web</a>
-      <a href="https://github.com/0xnothings/tools-data">tools-data</a>
-      <a href="https://github.com/0xnothings">all repos</a>
-    </nav>
-    <div>
-      Repo data from the GitHub API, cached 10 minutes in this browser. Single file, no external
-      requests — no fonts, no analytics. <span id="cacheNote"></span>
+    <div class="footer-top">
+      <div class="footer-brand">Makisig <span>Cipher</span> <span class="mono">/ 0xnothings</span></div>
+      <nav aria-label="Repository shortcuts">
+        <a href="https://github.com/0xnothings/tools-security">Security</a>
+        <a href="https://github.com/0xnothings/tools-devops">DevOps</a>
+        <a href="https://github.com/0xnothings/tools-web">Web</a>
+        <a href="https://github.com/0xnothings/tools-data">Data</a>
+        <a href="https://github.com/0xnothings">GitHub ↗</a>
+      </nav>
     </div>
+    <div class="footer-note">Think clearly. Build carefully. Keep learning. <span id="cacheNote" class="sr-only"></span></div>
   </div>
 </footer>
 
 <script type="module">
 const USER = '0xnothings';
+// Add your public contacts here. Leave blank to keep the corresponding link inactive.
+const CONTACTS = {
+  telegram: 'https://t.me/nothinganywhere', // Example format: https://t.me/your_username
+  email: 'no0thinganywhere@gmail.com',    // Your public email address
+};
+function configureContacts() {
+  if (CONTACTS.telegram) {
+    try {
+      const url = new URL(CONTACTS.telegram);
+      if (url.protocol === 'https:' && ['t.me', 'telegram.me'].includes(url.hostname)) {
+        const link = document.getElementById('telegramLink');
+        link.href = url.href; link.target = '_blank'; link.rel = 'noopener noreferrer';
+        link.removeAttribute('aria-disabled'); link.title = 'Contact me on Telegram';
+      }
+    } catch {}
+  }
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(CONTACTS.email)) {
+    const link = document.getElementById('emailLink');
+    link.href = 'mailto:' + CONTACTS.email;
+    link.removeAttribute('aria-disabled'); link.title = 'Send me an email';
+  }
+}
+configureContacts();
 const CACHE_KEY = 'oxn-repos-v2';
 const CACHE_MS = 10 * 60 * 1000;
 
@@ -348,13 +354,18 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const THEME_KEY = 'oxn-theme';
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  $('themeLabel').textContent = t;
+  $('themeLabel').textContent = t === 'dark' ? 'Dark mode' : 'Light mode';
+  const nextLabel = t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  $('themeBtn').setAttribute('aria-label', nextLabel);
+  $('themeBtn').setAttribute('title', nextLabel);
+  $('themeBtn').setAttribute('aria-pressed', String(t === 'dark'));
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#100e12' : '#f6f1e9');
   try { localStorage.setItem(THEME_KEY, t); } catch {}
 }
 (function () {
   let saved = null;
   try { saved = localStorage.getItem(THEME_KEY); } catch {}
-  setTheme(saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
+  setTheme((['dark', 'light'].includes(saved) ? saved : null) || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
 })();
 $('themeBtn').addEventListener('click', () => {
   setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
@@ -435,6 +446,7 @@ function featuredCard(r) {
     ? `<div class="tags">${r.topics.slice(0, 8).map((t) => `<span class="t">${esc(t)}</span>`).join('')}</div>`
     : '';
   return `<article class="fcard">
+    <div class="fcard-category"><span>${esc(r.name.replace(/^tools-/, ""))} collection</span><span class="fcard-index">${String(ORDER.indexOf(r.name) + 1).padStart(2, "0")} /</span></div>
     <div class="fcard-top">
       <h3><a href="${esc(r.html_url)}" rel="noopener">${esc(r.name)}</a></h3>
       <span class="stars">★ ${esc(stars)}</span>
@@ -497,6 +509,10 @@ function paint() {
   $('emptyState').innerHTML = list.length ? ''
     : `<div class="empty">Nothing matches <code>${esc($('q').value)}</code>.</div>`;
 }
+
+document.querySelectorAll('img').forEach((img) => {
+  img.addEventListener('error', () => { img.style.visibility = 'hidden'; });
+});
 
 repos = await load();
 paint();

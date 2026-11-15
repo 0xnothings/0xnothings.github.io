@@ -8,468 +8,488 @@
 <meta name="color-scheme" content="dark light">
 <style>
 /* ------------------------------------------------------------------
-   Palette: amber/copper void. Deliberately not GitHub's blue-on-graphite.
-   Dark is the default; light is opt-in and persisted in localStorage.
+   Palette: amber / copper on warm void. Deliberately not GitHub blue.
+   Dark default, light opt-in, choice persisted.
    ------------------------------------------------------------------ */
 :root[data-theme="dark"] {
-  --void:        #0a0806;
-  --void-2:      #100d0a;
-  --surface:     #17130f;
-  --surface-2:   #1e1913;
-  --surface-3:   #261f18;
-  --hairline:    #332a21;
-  --hairline-2:  #453829;
-  --ink:         #f2ede6;
-  --ink-2:       #c4b8a8;
-  --ink-3:       #8a7d6d;
-  --ember:       #e8763a;
-  --ember-2:     #ff9153;
-  --gold:        #e8b04a;
-  --gold-2:      #f7cd7a;
-  --mint:        #5eead4;
-  --rose:        #f0788c;
-  --glow:        rgba(232,118,58,.22);
-  --glow-2:      rgba(232,176,74,.14);
+  --bg:         #0a0806;
+  --surface:    #14100c;
+  --surface-2:  #1b1611;
+  --surface-3:  #241d16;
+  --line:       #2e2620;
+  --line-2:     #40352b;
+  --ink:        #f4efe8;
+  --ink-2:      #b8aa99;
+  --ink-3:      #7d6f60;
+  --ember:      #e8763a;
+  --ember-2:    #ff9153;
+  --gold:       #e8b04a;
+  --gold-2:     #f7cd7a;
+  --mint:       #5eead4;
+  --focus:      rgba(232,118,58,.35);
 }
 :root[data-theme="light"] {
-  --void:        #faf7f2;
-  --void-2:      #f3ede4;
-  --surface:     #ffffff;
-  --surface-2:   #faf6f0;
-  --surface-3:   #f2ebe1;
-  --hairline:    #e2d8c9;
-  --hairline-2:  #cdbfaa;
-  --ink:         #241d15;
-  --ink-2:       #574a3a;
-  --ink-3:       #87765f;
-  --ember:       #c2551f;
-  --ember-2:     #a8451a;
-  --gold:        #9a7215;
-  --gold-2:      #7d5c10;
-  --mint:        #0f766e;
-  --rose:        #b0324a;
-  --glow:        rgba(194,85,31,.10);
-  --glow-2:      rgba(154,114,21,.08);
+  --bg:         #fbf8f3;
+  --surface:    #ffffff;
+  --surface-2:  #f7f1e8;
+  --surface-3:  #efe6d8;
+  --line:       #e4d9c8;
+  --line-2:     #cdbda4;
+  --ink:        #221b14;
+  --ink-2:      #54483a;
+  --ink-3:      #857460;
+  --ember:      #bc4f1c;
+  --ember-2:    #9c3f14;
+  --gold:       #8f6a12;
+  --gold-2:     #74550e;
+  --mint:       #0f766e;
+  --focus:      rgba(188,79,28,.25);
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  margin: 0;
-  background: var(--void);
-  color: var(--ink);
+  margin: 0; background: var(--bg); color: var(--ink);
   font: 16px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* grain + ember bloom, no image files */
   background-image:
-    radial-gradient(900px 420px at 12% -8%, var(--glow), transparent 68%),
-    radial-gradient(700px 360px at 92% 4%, var(--glow-2), transparent 70%);
+    radial-gradient(880px 380px at 8% -10%, rgba(232,118,58,.13), transparent 70%),
+    radial-gradient(680px 320px at 95% 0%, rgba(232,176,74,.08), transparent 72%);
   background-attachment: fixed;
 }
 a { color: var(--gold-2); text-decoration: none; }
 a:hover { color: var(--ember-2); }
 .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
 
-/* ── header ─────────────────────────────────────────────── */
-.hdr { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px);
-  background: color-mix(in srgb, var(--void) 86%, transparent);
-  border-bottom: 1px solid var(--hairline); }
-.hdr-in { display: flex; align-items: center; gap: 14px; padding: 13px 0; }
-.brand { display: flex; align-items: baseline; gap: 9px; font-weight: 650; letter-spacing: -.01em; }
-.brand .mark { color: var(--ember); font-size: 19px; }
-.brand .dim { color: var(--ink-3); font-weight: 400; font-size: 14px; }
-.spacer { flex: 1; }
-.icon-btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--surface-2); border: 1px solid var(--hairline);
-  color: var(--ink-2); border-radius: 9px; padding: 7px 12px;
-  font-size: 13.5px; cursor: pointer; font-family: inherit;
+/* one consistent container, one consistent gutter */
+.shell { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 560px) { .shell { padding: 0 16px; } }
+
+/* ── top bar ──────────────────────────────────────────────── */
+.bar { position: sticky; top: 0; z-index: 60;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.bar-in { display: flex; align-items: center; gap: 12px; height: 56px; }
+.mark { color: var(--ember); font-size: 17px; line-height: 1; }
+.bar-title { font-weight: 620; letter-spacing: -.01em; white-space: nowrap; }
+.bar-title span { color: var(--ink-3); font-weight: 400; }
+.grow { flex: 1 1 auto; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+  color: var(--ink-2); font: 13px/1 inherit; cursor: pointer; white-space: nowrap;
 }
-.icon-btn:hover { border-color: var(--hairline-2); color: var(--ink); }
-.icon-btn:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+.btn:hover { border-color: var(--line-2); color: var(--ink); }
+.btn:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
 
-/* ── hero / profile ─────────────────────────────────────── */
-.hero { padding: 46px 0 34px; }
-.hero-grid { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+/* ── hero ─────────────────────────────────────────────────── */
+.hero { padding: 52px 0 30px; }
+.hero-row { display: flex; gap: 22px; align-items: flex-start; }
 .avatar {
-  width: 88px; height: 88px; border-radius: 20px; flex: 0 0 auto;
+  flex: 0 0 auto; width: 84px; height: 84px; border-radius: 22px;
   display: grid; place-items: center;
-  background: linear-gradient(145deg, var(--ember), var(--gold));
-  color: #1a0f06; font: 800 34px/1 ui-monospace, monospace; letter-spacing: -.04em;
-  box-shadow: 0 10px 34px -14px var(--ember);
+  background: linear-gradient(150deg, var(--ember), var(--gold));
+  color: #1c0f05; font: 800 30px/1 ui-monospace, monospace; letter-spacing: -.05em;
+  box-shadow: 0 12px 32px -16px var(--ember);
 }
-.hero-body { flex: 1 1 320px; min-width: 0; }
-h1 { margin: 0 0 6px; font-size: 30px; line-height: 1.15; letter-spacing: -.025em; }
-h1 .accent { color: var(--ember); }
-.bio { margin: 0 0 14px; color: var(--ink-2); max-width: 68ch; font-size: 15.5px; }
-.meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.chip {
-  font: 12.5px var(--mono); color: var(--ink-3);
-  border: 1px solid var(--hairline); border-radius: 999px; padding: 3px 11px;
-  background: var(--surface);
-}
-.chip b { color: var(--ink); font-weight: 600; }
-.chip.on { border-color: var(--ember); color: var(--ember-2); }
+.hero-txt { min-width: 0; padding-top: 2px; }
+h1 { margin: 0 0 8px; font-size: 29px; line-height: 1.2; letter-spacing: -.028em; font-weight: 660; }
+h1 em { font-style: normal; color: var(--ember); }
+.tagline { margin: 0 0 16px; color: var(--ink-2); font-size: 15.5px; max-width: 74ch; }
+.tagline .mono { color: var(--gold-2); }
+.pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.pill { font: 12px/1 var(--mono); color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+.pill b { color: var(--ink); font-weight: 620; }
+.pill.hot { border-color: var(--line-2); background: var(--surface-2); }
+.pill.hot b { color: var(--ember-2); }
 
-/* ── stat strip ─────────────────────────────────────────── */
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
-  gap: 1px; background: var(--hairline); border: 1px solid var(--hairline);
-  border-radius: 14px; overflow: hidden; margin: 30px 0 0; }
-.stat { background: var(--surface); padding: 15px 16px; }
-.stat b { display: block; font: 650 23px/1.2 var(--mono); color: var(--gold); }
-.stat span { font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+/* ── stat strip: even, gapped, never squeezed ─────────────── */
+.totals { display: grid; gap: 10px; margin-top: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 16px; }
+.tile b { display: block; font: 640 22px/1.15 var(--mono); color: var(--gold); margin-bottom: 3px; }
+.tile span { font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .07em; }
 
-/* ── controls ───────────────────────────────────────────── */
-.controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 30px 0 18px; }
-.search {
-  flex: 1 1 260px; min-width: 0; position: relative;
-}
-.search input {
-  width: 100%; padding: 11px 14px 11px 38px;
-  background: var(--surface); border: 1px solid var(--hairline);
-  border-radius: 10px; color: var(--ink); font: 14.5px inherit; font-family: inherit;
-}
-.search input::placeholder { color: var(--ink-3); }
-.search input:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px var(--glow); }
-.search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-3); }
-select.sortsel {
-  padding: 11px 13px; background: var(--surface); border: 1px solid var(--hairline);
-  border-radius: 10px; color: var(--ink-2); font: 14px inherit; font-family: inherit; cursor: pointer;
-}
-select.sortsel:focus { outline: none; border-color: var(--ember); }
+/* ── section headers: the structure the page was missing ──── */
+.sec { margin-top: 46px; }
+.sec-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+.sec-head h2 { margin: 0; font-size: 15px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink-2); font-weight: 640; }
+.sec-head .count { font: 12px var(--mono); color: var(--ink-3); }
+.sec-head p { margin: 0; flex-basis: 100%; color: var(--ink-3); font-size: 13.5px; }
 
-/* ── repo grid ──────────────────────────────────────────── */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
-.card {
-  background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px;
-  padding: 17px; display: flex; flex-direction: column; gap: 9px;
-  transition: border-color .16s, transform .16s, box-shadow .16s;
-}
-.card:hover { border-color: var(--hairline-2); transform: translateY(-2px);
-  box-shadow: 0 14px 34px -20px rgba(0,0,0,.7); }
-.card-top { display: flex; align-items: baseline; gap: 8px; }
-.card h3 { margin: 0; font-size: 15.5px; font-family: var(--mono); letter-spacing: -.01em; }
-.card h3 a { color: var(--ink); }
-.card h3 a:hover { color: var(--ember-2); }
+/* ── featured: the four tool repos, full detail ───────────── */
+/* grid-auto-rows:1fr makes every ROW match the tallest, and flex inside the
+   card pushes the tag block to the bottom, so all four cards are identical
+   height regardless of how many topics a repo happens to have. */
+.featured { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); grid-auto-rows: 1fr; }
+@media (min-width: 1000px) { .featured { grid-template-columns: repeat(2, 1fr); } }
+
+.fcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 18px; display: flex; flex-direction: column; gap: 12px;
+  border-left: 2px solid var(--ember); transition: border-color .15s, box-shadow .15s, transform .15s; }
+.fcard:hover { border-color: var(--line-2); border-left-color: var(--ember-2);
+  box-shadow: 0 16px 36px -22px rgba(0,0,0,.75); transform: translateY(-2px); }
+.fcard-top { display: flex; align-items: baseline; gap: 10px; }
+.fcard-top h3 { margin: 0; font: 620 16px/1.3 var(--mono); letter-spacing: -.015em; }
+.fcard-top h3 a { color: var(--ink); }
+.fcard-top h3 a:hover { color: var(--ember-2); }
 .stars { margin-left: auto; font: 12.5px var(--mono); color: var(--gold); white-space: nowrap; }
-.card p { margin: 0; font-size: 14px; color: var(--ink-2); flex: 1; }
-.tags { display: flex; flex-wrap: wrap; gap: 5px; }
-.tag { font: 11px var(--mono); color: var(--ink-3); border: 1px solid var(--hairline);
-  border-radius: 6px; padding: 1.5px 7px; background: var(--surface-2); }
-.card-foot { display: flex; gap: 14px; font: 12px var(--mono); color: var(--ink-3);
-  border-top: 1px solid var(--hairline); padding-top: 9px; margin-top: 2px; }
-.card-foot .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px;
-  background: var(--mint); }
-.card-foot .dot.warn { background: var(--gold); }
+.fcard p { margin: 0; font-size: 14px; color: var(--ink-2); }
+/* description gets a fixed 2-line slot so every card aligns */
+.fcard p.clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; min-height: 2.9em; }
 
-/* ── states ─────────────────────────────────────────────── */
-.empty { text-align: center; padding: 56px 20px; color: var(--ink-3); }
-.empty code { color: var(--gold); font-family: var(--mono); }
-.skel { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px;
-  padding: 17px; height: 150px; position: relative; overflow: hidden; }
-.skel::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, var(--surface-3), transparent);
-  animation: sweep 1.5s infinite;
+/* meta as a real 2-column definition grid: never wraps into a mess */
+.meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 14px; border-top: 1px solid var(--line); padding-top: 12px; margin-top: auto; }
+.meta div { min-width: 0; }
+.meta dt { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase;
+  letter-spacing: .08em; margin-bottom: 2px; }
+.meta dd { margin: 0; font: 13px/1.35 var(--mono); color: var(--ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta dd.live { color: var(--mint); }
+.meta dd.warn { color: var(--gold); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 2px; }
+.tags .t { font: 11px/1 var(--mono); color: var(--ink-3); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; white-space: nowrap; }
+
+/* ── rest of the repos: compact, scannable, no clutter ─────── */
+.rows { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.row { display: grid; gap: 4px 14px; padding: 13px 16px;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 2.4fr) auto;
+  align-items: center; background: var(--surface); border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+.row:hover { background: var(--surface-2); }
+.row .rname { font: 13.5px/1.3 var(--mono); color: var(--ink); min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .rdesc { font-size: 13px; color: var(--ink-3); min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .rmeta { font: 11.5px/1 var(--mono); color: var(--ink-3); white-space: nowrap; text-align: right; }
+@media (max-width: 720px) {
+  .row { grid-template-columns: 1fr auto; }
+  .row .rdesc { grid-column: 1 / -1; }
 }
-@keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-.notice { border: 1px solid var(--hairline); border-left: 2px solid var(--gold);
-  background: var(--surface); border-radius: 10px; padding: 13px 16px; color: var(--ink-2);
-  font-size: 14px; margin: 0 0 18px; }
-.notice b { color: var(--gold-2); }
 
-/* ── footer ─────────────────────────────────────────────── */
-.foot { border-top: 1px solid var(--hairline); margin-top: 54px; padding: 26px 0 54px;
-  color: var(--ink-3); font-size: 13.5px; }
-.foot-links { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 10px; }
-.foot-links a { color: var(--ink-2); }
+/* ── controls, one aligned row ────────────────────────────── */
+.controls { display: grid; gap: 10px; margin-bottom: 14px;
+  grid-template-columns: minmax(0, 1fr) auto; }
+@media (max-width: 560px) { .controls { grid-template-columns: 1fr; } }
+.field { position: relative; }
+.field svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; }
+.field input { width: 100%; height: 40px; padding: 0 14px 0 37px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  color: var(--ink); font: 14.5px inherit; }
+.field input::placeholder { color: var(--ink-3); }
+.field input:focus { outline: none; border-color: var(--ember); box-shadow: 0 0 0 3px var(--focus); }
+select { height: 40px; padding: 0 12px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; color: var(--ink-2); font: 14px inherit; cursor: pointer; }
+select:focus { outline: none; border-color: var(--ember); }
 
-@media (max-width: 620px) {
-  h1 { font-size: 24px; }
-  .hero { padding: 30px 0 24px; }
-  .avatar { width: 68px; height: 68px; font-size: 26px; border-radius: 16px; }
-  .grid { grid-template-columns: 1fr; }
+/* ── states ───────────────────────────────────────────────── */
+.note { border: 1px solid var(--line); border-left: 2px solid var(--gold); background: var(--surface);
+  border-radius: 10px; padding: 12px 15px; color: var(--ink-2); font-size: 13.5px; margin-bottom: 16px; }
+.note b { color: var(--gold-2); }
+.empty { text-align: center; padding: 48px 20px; color: var(--ink-3);
+  border: 1px dashed var(--line); border-radius: 12px; }
+.empty code { color: var(--gold); font-family: var(--mono); }
+.sk { background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  height: 172px; overflow: hidden; position: relative; }
+.sk::after { content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, var(--surface-3), transparent);
+  animation: sweep 1.4s infinite; }
+@keyframes sweep { to { transform: translateX(100%); } }
+
+/* ── footer ───────────────────────────────────────────────── */
+.foot { margin-top: 56px; border-top: 1px solid var(--line); padding: 26px 0 56px; color: var(--ink-3); font-size: 13.5px; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 12px; }
+.foot nav a { color: var(--ink-2); }
+
+@media (max-width: 560px) {
+  h1 { font-size: 22px; } .hero { padding: 32px 0 22px; }
+  .avatar { width: 60px; height: 60px; height: 60px; border-radius: 16px; font-size: 21px; }
+  .hero-row { gap: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
-  html { scroll-behavior: auto; }
 }
 </style>
 </head>
 <body>
 
-<header class="hdr">
-  <div class="wrap hdr-in">
-    <div class="brand">
-      <span class="mark mono">◆</span>
-      <span>0xnothings</span>
-      <span class="dim mono">/ tools</span>
-    </div>
-    <div class="spacer"></div>
-    <button class="icon-btn" id="themeBtn" type="button" aria-live="polite">◐ <span id="themeLabel">dark</span></button>
-    <a class="icon-btn" href="https://github.com/0xnothings" rel="noopener">GitHub</a>
+<div class="bar">
+  <div class="shell bar-in">
+    <span class="mark">◆</span>
+    <span class="bar-title">0xnothings <span class="mono">/ tools</span></span>
+    <span class="grow"></span>
+    <button class="btn" id="themeBtn" type="button" aria-live="polite">◐ <span id="themeLabel">dark</span></button>
+    <a class="btn" href="https://github.com/0xnothings" rel="noopener">GitHub</a>
   </div>
-</header>
+</div>
 
-<main class="wrap">
+<main class="shell">
 
   <section class="hero">
-    <div class="hero-grid">
+    <div class="hero-row">
       <div class="avatar" aria-hidden="true">0x</div>
-      <div class="hero-body">
-        <h1>Nothinganywhere <span class="accent mono">· 0xnothings</span></h1>
-        <p class="bio">
+      <div class="hero-txt">
+        <h1>Nothinganywhere <em class="mono">· 0xnothings</em></h1>
+        <p class="tagline">
           Zero-dependency Node.js CLI tools. Every one runs on the standard library alone —
           no <span class="mono">npm install</span>, no build step, no native modules.
-          Recon, devops gates, scraping, and hand-written binary parsers.
         </p>
-        <div class="meta-row">
-          <span class="chip mono"><b id="repoCount">—</b> repos</span>
-          <span class="chip mono"><b>234</b> tools</span>
-          <span class="chip mono"><b>41.5k</b> LOC</span>
-          <span class="chip mono"><b>0</b> deps</span>
-          <span class="chip on mono">MIT</span>
+        <div class="pills">
+          <span class="pill mono"><b>234</b> tools</span>
+          <span class="pill mono"><b>41.5k</b> lines</span>
+          <span class="pill mono"><b>0</b> dependencies</span>
+          <span class="pill hot mono"><b>94</b> output assertions</span>
+          <span class="pill mono">MIT</span>
         </div>
       </div>
     </div>
 
-    <div class="stats">
-      <div class="stat"><b id="statStars">—</b><span>stars</span></div>
-      <div class="stat"><b id="statForks">—</b><span>forks</span></div>
-      <div class="stat"><b id="statTools">234</b><span>tools shipped</span></div>
-      <div class="stat"><b id="statDeps">0</b><span>dependencies</span></div>
-      <div class="stat"><b id="statTests">94</b><span>output assertions</span></div>
+    <div class="totals">
+      <div class="tile"><b id="tRepos">—</b><span>repositories</span></div>
+      <div class="tile"><b id="tStars">—</b><span>total stars</span></div>
+      <div class="tile"><b id="tForks">—</b><span>total forks</span></div>
+      <div class="tile"><b id="tUpdated">—</b><span>last activity</span></div>
     </div>
   </section>
 
-  <section>
-    <div id="notice"></div>
+  <div id="notice"></div>
 
+  <section class="sec">
+    <div class="sec-head">
+      <h2>Tool collections</h2>
+      <span class="count mono" id="cTools">—</span>
+      <p>The four main repos. One file per tool, a shared helper, and three test layers in CI on Node 18, 20 and 22.</p>
+    </div>
+    <div class="featured" id="featured">
+      <div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="allSection" hidden>
+    <div class="sec-head">
+      <h2>Other repositories</h2>
+      <span class="count mono" id="cOthers">—</span>
+      <p>Experiments, coursework and older work.</p>
+    </div>
     <div class="controls">
-      <label class="search">
+      <label class="field">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
         </svg>
         <input id="q" type="search" placeholder="Filter by name, description or language…" autocomplete="off" aria-label="Filter repositories">
       </label>
-      <select class="sortsel" id="sort" aria-label="Sort repositories">
+      <select id="sort" aria-label="Sort repositories">
         <option value="updated">Recently updated</option>
         <option value="name">Name A–Z</option>
         <option value="stars">Most stars</option>
         <option value="size">Largest</option>
       </select>
     </div>
-
-    <div class="grid" id="grid">
-      <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
-    </div>
+    <div class="rows" id="rows"></div>
     <div id="emptyState"></div>
   </section>
 
 </main>
 
 <footer class="foot">
-  <div class="wrap">
-    <div class="foot-links">
+  <div class="shell">
+    <nav>
       <a href="https://github.com/0xnothings/tools-security">tools-security</a>
       <a href="https://github.com/0xnothings/tools-devops">tools-devops</a>
       <a href="https://github.com/0xnothings/tools-web">tools-web</a>
       <a href="https://github.com/0xnothings/tools-data">tools-data</a>
       <a href="https://github.com/0xnothings">all repos</a>
-    </div>
+    </nav>
     <div>
-      Repo data from the GitHub API, cached for 10 minutes in this browser.
-      This page is a single file with no external requests — no fonts, no analytics, no trackers.
-      <span id="cachedAt"></span>
+      Repo data from the GitHub API, cached 10 minutes in this browser. Single file, no external
+      requests — no fonts, no analytics. <span id="cacheNote"></span>
     </div>
   </div>
 </footer>
 
 <script type="module">
-// ---------------------------------------------------------------------------
-// The page is static; repo cards come from the public GitHub API at runtime.
-// Everything degrades: no JS or a rate-limited API still leaves a readable page
-// with the four canonical repos listed in the footer.
-// ---------------------------------------------------------------------------
 const USER = '0xnothings';
-const CACHE_KEY = 'oxn-repos-v1';
+const CACHE_KEY = 'oxn-repos-v2';
 const CACHE_MS = 10 * 60 * 1000;
 
-// Shown when the API is unavailable, so the page is never empty.
-const FALLBACK = [
-  { name: 'tools-security', html_url: `https://github.com/${USER}/tools-security`, description: 'Recon, web-app testing, credential hygiene, CVE intel and static audit.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['security', 'recon', 'appsec'], size: null, pushed_at: null },
-  { name: 'tools-devops', html_url: `https://github.com/${USER}/tools-devops`, description: 'Deploy gates, config hygiene, host audits and generators.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['devops', 'automation'], size: null, pushed_at: null },
-  { name: 'tools-web', html_url: `https://github.com/${USER}/tools-web`, description: 'Scraping, feeds, metadata and page analysis with no headless browser.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['web', 'scraping'], size: null, pushed_at: null },
-  { name: 'tools-data', html_url: `https://github.com/${USER}/tools-data`, description: 'CSV, JSON, ZIP, XLSX, SQLite and image metadata — parsers written by hand.', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: ['data', 'parsing'], size: null, pushed_at: null },
-];
+// Tool-repo detail, so the featured cards are never empty even when the API is down.
+const KNOWN = {
+  'tools-security': { tools: 65, loc: '10,026', asserts: 23, blurb: 'Recon, web-app testing, credential hygiene, CVE intel and static audit.' },
+  'tools-devops':   { tools: 48, loc: '6,669',  asserts: 19, blurb: 'Deploy gates, config hygiene, host audits and generators.' },
+  'tools-web':      { tools: 61, loc: '11,164', asserts: 20, blurb: 'Scraping, feeds, metadata and page analysis with no headless browser.' },
+  'tools-data':     { tools: 60, loc: '13,696', asserts: 32, blurb: 'CSV, JSON, ZIP, XLSX, SQLite and image metadata — parsers written by hand.' },
+};
+const ORDER = ['tools-security', 'tools-devops', 'tools-web', 'tools-data'];
 
-const el = (id) => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-// ── theme ──────────────────────────────────────────────────────────────────
+// ── theme ─────────────────────────────────────────────────────────────────
 const THEME_KEY = 'oxn-theme';
-function applyTheme(t) {
+function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  el('themeLabel').textContent = t;
+  $('themeLabel').textContent = t;
   try { localStorage.setItem(THEME_KEY, t); } catch {}
 }
-(function initTheme() {
+(function () {
   let saved = null;
   try { saved = localStorage.getItem(THEME_KEY); } catch {}
-  const prefersLight = matchMedia('(prefers-color-scheme: light)').matches;
-  applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+  setTheme(saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
 })();
-el('themeBtn').addEventListener('click', () => {
-  const now = document.documentElement.getAttribute('data-theme');
-  applyTheme(now === 'dark' ? 'light' : 'dark');
+$('themeBtn').addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 });
 
-// ── data ───────────────────────────────────────────────────────────────────
-let repos = [];
-let usedCache = false;
+// ── formatting ────────────────────────────────────────────────────────────
+const kb = (n) => (n == null ? '—' : n >= 1024 ? `${(n / 1024).toFixed(1)} MB` : `${n} KB`);
+const ago = (iso) => {
+  if (!iso) return '—';
+  const d = Math.floor((Date.now() - new Date(iso)) / 86400000);
+  if (d < 1) return 'today';
+  if (d === 1) return 'yesterday';
+  if (d < 30) return `${d} days ago`;
+  if (d < 365) return `${Math.round(d / 30)} months ago`;
+  return `${(d / 365).toFixed(1)} years ago`;
+};
 
+// ── data ──────────────────────────────────────────────────────────────────
+let repos = [];
 function readCache() {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const { at, data } = JSON.parse(raw);
-    if (!Array.isArray(data) || !data.length) return null;
-    if (Date.now() - at > CACHE_MS) return null;
-    usedCache = true;
-    return { at, data };
+    if (!Array.isArray(data) || !data.length || Date.now() - at > CACHE_MS) return null;
+    $('cacheNote').textContent = `Cache written ${new Date(at).toLocaleTimeString()}.`;
+    return data;
   } catch { return null; }
 }
-function writeCache(data) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data })); } catch {}
-}
+function writeCache(data) { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data })); } catch {} }
 
-// The list endpoint does NOT include topics — that needs one request per repo,
-// against an unauthenticated limit of 60/hour. So topics are fetched only for
-// the four tool repos, three at a time, and any failure just leaves the tag row
-// empty. Card content never depends on them.
-async function fetchTopics(names) {
-  const out = {};
-  const queue = [...names];
-  const worker = async () => {
-    while (queue.length) {
-      const name = queue.shift();
+// topics are NOT in the list payload; one request per repo against a 60/hour
+// unauthenticated limit, so only the four tool repos, three at a time, and a
+// failure just leaves the tag row out.
+async function loadTopics(names) {
+  const out = {}; const q = [...names];
+  const work = async () => {
+    while (q.length) {
+      const n = q.shift();
       try {
-        const res = await fetch(`https://api.github.com/repos/${USER}/${name}/topics`, {
-          headers: { accept: 'application/vnd.github+json' },
-        });
-        if (!res.ok) continue;
-        const j = await res.json();
-        if (Array.isArray(j.names)) out[name] = j.names;
-      } catch { /* topics are decorative; never fail the page for them */ }
+        const r = await fetch(`https://api.github.com/repos/${USER}/${n}/topics`, { headers: { accept: 'application/vnd.github+json' } });
+        if (r.ok) { const j = await r.json(); if (Array.isArray(j.names)) out[n] = j.names; }
+      } catch {}
     }
   };
-  await Promise.all([worker(), worker(), worker()]);
+  await Promise.all([work(), work(), work()]);
   return out;
 }
 
-async function fetchRepos() {
+async function load() {
   const cached = readCache();
-  if (cached) { el('cachedAt').textContent = ` Cache written ${new Date(cached.at).toLocaleTimeString()}.`; return cached.data; }
-
+  if (cached) return cached;
   const ctl = new AbortController();
   const t = setTimeout(() => ctl.abort(), 12000);
   try {
     const res = await fetch(`https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`, {
-      signal: ctl.signal,
-      headers: { accept: 'application/vnd.github+json' },
+      signal: ctl.signal, headers: { accept: 'application/vnd.github+json' },
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!Array.isArray(data)) throw new Error('unexpected payload');
-
-    const tools = data.filter((r) => /^tools-/.test(r.name)).map((r) => r.name);
-    const topics = await fetchTopics(tools);
+    const topics = await loadTopics(data.filter((r) => /^tools-/.test(r.name)).map((r) => r.name));
     for (const r of data) if (topics[r.name]) r.topics = topics[r.name];
-
     writeCache(data);
     return data;
   } catch (e) {
-    el('notice').innerHTML =
-      `<div class="notice"><b>GitHub API unavailable</b> (${esc(e.name === 'AbortError' ? 'timeout' : e.message)}).
-       Showing the four main repos from memory. Live stars and timestamps will appear on a later load.</div>`;
-    return FALLBACK;
-  } finally {
-    clearTimeout(t);
-  }
+    $('notice').innerHTML = `<div class="note"><b>GitHub API unavailable</b> (${esc(e.name === 'AbortError' ? 'timeout' : e.message)}).
+      Showing the four tool collections from a built-in list. Live numbers appear on a later load.</div>`;
+    return ORDER.map((name) => ({ name, html_url: `https://github.com/${USER}/${name}`, description: KNOWN[name]?.blurb || '', stargazers_count: null, forks_count: null, language: 'JavaScript', topics: [], size: null, pushed_at: null }));
+  } finally { clearTimeout(t); }
 }
 
-// ── render ─────────────────────────────────────────────────────────────────
-const fmtSize = (kb) => (kb == null ? '—' : kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`);
-const fmtAgo = (iso) => {
-  if (!iso) return '—';
-  const d = Math.floor((Date.now() - new Date(iso)) / 86400000);
-  if (d < 1) return 'today';
-  if (d === 1) return 'yesterday';
-  if (d < 30) return `${d}d ago`;
-  if (d < 365) return `${Math.round(d / 30)}mo ago`;
-  return `${(d / 365).toFixed(1)}y ago`;
-};
-
-function cardHTML(r) {
-  const stars = r.stargazers_count == null ? '<span class="stars">—</span>'
-    : `<span class="stars">★ ${r.stargazers_count}</span>`;
-  const topics = (r.topics || []).slice(0, 6).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
-  const archived = r.archived ? '<span class="dot warn"></span>archived' : '<span class="dot"></span>active';
-  return `<article class="card">
-    <div class="card-top">
+// ── render: featured ──────────────────────────────────────────────────────
+function featuredCard(r) {
+  const k = KNOWN[r.name] || {};
+  const stars = r.stargazers_count == null ? '—' : `${r.stargazers_count}`;
+  const tags = (r.topics || []).length
+    ? `<div class="tags">${r.topics.slice(0, 8).map((t) => `<span class="t">${esc(t)}</span>`).join('')}</div>`
+    : '';
+  return `<article class="fcard">
+    <div class="fcard-top">
       <h3><a href="${esc(r.html_url)}" rel="noopener">${esc(r.name)}</a></h3>
-      ${stars}
+      <span class="stars">★ ${esc(stars)}</span>
     </div>
-    <p>${esc(r.description || 'No description.')}</p>
-    <div class="tags">${topics}</div>
-    <div class="card-foot">
-      <span>${archived}</span>
-      <span>${esc(r.language || '—')}</span>
-      <span>${fmtSize(r.size)}</span>
-      <span>updated ${fmtAgo(r.pushed_at)}</span>
-    </div>
+    <p class="clamp">${esc(r.description || k.blurb || 'No description.')}</p>
+    <dl class="meta">
+      <div><dt>tools</dt><dd>${k.tools ?? '—'}</dd></div>
+      <div><dt>lines of code</dt><dd>${k.loc ?? '—'}</dd></div>
+      <div><dt>assertions</dt><dd>${k.asserts ?? '—'}</dd></div>
+      <div><dt>last push</dt><dd class="live">${ago(r.pushed_at)}</dd></div>
+    </dl>
+    ${tags}
   </article>`;
 }
 
-function render() {
-  const q = el('q').value.trim().toLowerCase();
-  const sort = el('sort').value;
+// ── render: compact rows ──────────────────────────────────────────────────
+function rowHTML(r) {
+  const meta = [r.language || '—', kb(r.size), ago(r.pushed_at)].filter(Boolean).join(' · ');
+  return `<div class="row">
+    <div class="rname"><a href="${esc(r.html_url)}" rel="noopener">${esc(r.name)}</a></div>
+    <div class="rdesc">${esc(r.description || 'No description.')}</div>
+    <div class="rmeta">${esc(meta)}</div>
+  </div>`;
+}
 
-  let list = repos.filter((r) => {
-    if (!q) return true;
-    const hay = [r.name, r.description, r.language, ...(r.topics || [])].join(' ').toLowerCase();
-    return hay.includes(q);
-  });
+// ── render all ────────────────────────────────────────────────────────────
+function paint() {
+  const toolRepos = ORDER.map((n) => repos.find((r) => r.name === n)).filter(Boolean);
+  const extra = repos.filter((r) => !/^tools-/.test(r.name));
 
-  const by = {
+  $('featured').innerHTML = toolRepos.length
+    ? toolRepos.map(featuredCard).join('')
+    : `<div class="empty">No tool repositories found.</div>`;
+  $('cTools').textContent = `${toolRepos.length} repos`;
+
+  // stats over everything we know about
+  const withStars = repos.filter((r) => r.stargazers_count != null);
+  $('tRepos').textContent = repos.length;
+  $('tStars').textContent = withStars.length ? withStars.reduce((a, r) => a + r.stargazers_count, 0) : '—';
+  $('tForks').textContent = withStars.length ? repos.reduce((a, r) => a + (r.forks_count || 0), 0) : '—';
+  const latest = repos.map((r) => r.pushed_at).filter(Boolean).sort().pop();
+  $('tUpdated').textContent = latest ? ago(latest) : '—';
+
+  // the "other repos" section only exists when there are others
+  if (!extra.length) { $('allSection').hidden = true; return; }
+  $('allSection').hidden = false;
+  $('cOthers').textContent = `${extra.length} repos`;
+
+  const q = $('q').value.trim().toLowerCase();
+  const s = $('sort').value;
+  let list = extra.filter((r) => !q || [r.name, r.description, r.language, ...(r.topics || [])].join(' ').toLowerCase().includes(q));
+  list = [...list].sort({
     updated: (a, b) => String(b.pushed_at || '').localeCompare(String(a.pushed_at || '')),
     name: (a, b) => a.name.localeCompare(b.name),
     stars: (a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0),
     size: (a, b) => (b.size || 0) - (a.size || 0),
-  }[sort] || (() => 0);
-  list = [...list].sort(by);
+  }[s] || (() => 0));
 
-  el('grid').innerHTML = list.map(cardHTML).join('');
-  el('emptyState').innerHTML = list.length ? '' :
-    `<div class="empty">Nothing matches <code>${esc(el('q').value)}</code>.<br>Try a language, a topic, or part of a description.</div>`;
-
-  // stats reflect ALL repos, not the filtered view
-  const stars = repos.reduce((a, r) => a + (r.stargazers_count || 0), 0);
-  const forks = repos.reduce((a, r) => a + (r.forks_count || 0), 0);
-  el('statStars').textContent = repos.some((r) => r.stargazers_count != null) ? stars : '—';
-  el('statForks').textContent = repos.some((r) => r.forks_count != null) ? forks : '—';
-  el('repoCount').textContent = repos.length;
+  $('rows').innerHTML = list.map(rowHTML).join('');
+  $('emptyState').innerHTML = list.length ? ''
+    : `<div class="empty">Nothing matches <code>${esc($('q').value)}</code>.</div>`;
 }
 
-// ── boot ───────────────────────────────────────────────────────────────────
-repos = await fetchRepos();
-render();
-el('q').addEventListener('input', render);
-el('sort').addEventListener('change', render);
-if (usedCache) el('notice').innerHTML = '';
-
-// expose for quick manual checks in devtools
+repos = await load();
+paint();
+$('q').addEventListener('input', paint);
+$('sort').addEventListener('change', paint);
 window.__repos = () => repos;
 </script>
 </body>
